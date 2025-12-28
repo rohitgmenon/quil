@@ -50,7 +50,7 @@ class _DeatilscreenState extends State<Deatilscreen> {
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  labelText: 'Your Note',
+                  labelText: 'your note',
                   hintText: "What's on your Mind",
                   border: InputBorder.none,
                 ),
