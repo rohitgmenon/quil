@@ -8,10 +8,10 @@ mixin Dbhelper {
   static Future<Database> _getdb() async {
     return openDatabase(
       join(await getDatabasesPath(), _dbname),
-      onCreate: (db, version) async => await db.execute(
-        "CREATE TABLE NOTES id TEXT PRIMAR KEY,userId TEXT NOT NULL, title TEXT NOT NULL,content TEXT NOT NULL,importance INT NOT NULL,created  TEXT NOT NULL,updated TEXT NOT NULL ,deletedat TEXT",
-      ),
       version: _version,
+      onCreate: (db, version) async => await db.execute(
+        'CREATE TABLE NOTES (id TEXT PRIMARY KEY,userId TEXT NOT NULL, title TEXT NOT NULL,content TEXT NOT NULL,importance INTEGER NOT NULL,created  TEXT NOT NULL,updated TEXT NOT NULL ,deletedat TEXT)',
+      ),
     );
   }
 
@@ -52,7 +52,7 @@ mixin Dbhelper {
       "NOTES",
       where: 'userId=? AND deletedat IS NULL',
       whereArgs: [userId],
-      orderBy: 'importance DESC,updated DESC',
+      orderBy: 'importance ASC,updated ASC',
     );
     if (maps.isEmpty) {
       return [];

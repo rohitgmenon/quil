@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quil/screens/notelist.dart';
 import 'package:quil/services/notesprovider.dart';
+import 'package:quil/test/constants.dart';
 
 void main() {
-  const localuser = 'local-user';
   runApp(
     ChangeNotifierProvider(
       create: (_) => Notesprovider(localuser)..loadnotes(),

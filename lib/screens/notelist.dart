@@ -59,7 +59,12 @@ class _NotelistState extends State<Notelist> {
               },
               icon: Icon(Icons.delete),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (ctx) => Deatilscreen(notes: note)),
+              );
+            },
           ),
         );
       },

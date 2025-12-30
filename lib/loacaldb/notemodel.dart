@@ -25,7 +25,7 @@ class Note {
   factory Note.fromMap(Map<String, dynamic> map) {
     return Note(
       id: map['id'] as String,
-      userId: map['userid'] as String,
+      userId: map['userId'] as String,
       title: map['title'] as String,
       content: map['content'] as String,
       importance: map['importance'] as int,
