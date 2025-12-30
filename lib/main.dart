@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quil/screens/notelist.dart';
+import 'package:quil/services/notesprovider.dart';
 
 void main() {
-  runApp(MyApp());
+  const localuser = 'local-user';
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => Notesprovider(localuser)..loadnotes(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

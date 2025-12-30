@@ -3,11 +3,13 @@ import 'package:quil/loacaldb/notemodel.dart';
 import 'package:quil/services/dbhelper.dart';
 
 class Notesprovider extends ChangeNotifier {
+  final String userId;
+  Notesprovider(this.userId);
   List<Note> _notes = [];
   List<Note> get notes => _notes;
 
   Future<void> loadnotes() async {
-    _notes = await Dbhelper.fetch() ?? [];
+    _notes = await Dbhelper.fetch(userId);
     notifyListeners();
   }
 

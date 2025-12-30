@@ -9,7 +9,7 @@ mixin Dbhelper {
     return openDatabase(
       join(await getDatabasesPath(), _dbname),
       onCreate: (db, version) async => await db.execute(
-        "CREATE TABLE NOTES id TEXT PRIMAR KEY, title TEXT NOT NULL,content TEXT NOT NULL,importance INT NOT NULL,created  TEXT NOT NULL,updated TEXT NOT NULL ",
+        "CREATE TABLE NOTES id TEXT PRIMAR KEY,userId TEXT NOT NULL, title TEXT NOT NULL,content TEXT NOT NULL,importance INT NOT NULL,created  TEXT NOT NULL,updated TEXT NOT NULL ,deletedat TEXT",
       ),
       version: _version,
     );
@@ -29,22 +29,33 @@ mixin Dbhelper {
     return await db.update(
       'NOTES',
       note.toMap(),
-      where: 'id =?',
-      whereArgs: [note.id],
+      where: 'id =? AND userId=?',
+      whereArgs: [note.id, note.userId],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  static Future<int> deletenote(Note note) async {
+  static Future<void> deletenote(Note note) async {
     final db = await _getdb();
-    return await db.delete('NOTES', where: 'id =?', whereArgs: [note.id]);
+    final deletedNote = note.copyWith(deletedat: DateTime.now());
+    await db.update(
+      'NOTES',
+      deletedNote.toMap(),
+      where: 'id=?AND userId=?',
+      whereArgs: [note.id, note.userId],
+    );
   }
 
-  static Future<List<Note>?> fetch() async {
+  static Future<List<Note>> fetch(String userId) async {
     final db = await _getdb();
-    final List<Map<String, dynamic>> maps = await db.query("NOTES");
+    final List<Map<String, dynamic>> maps = await db.query(
+      "NOTES",
+      where: 'userId=? AND deletedat IS NULL',
+      whereArgs: [userId],
+      orderBy: 'importance DESC,updated DESC',
+    );
     if (maps.isEmpty) {
-      return null;
+      return [];
     }
     return List.generate(maps.length, (index) => Note.fromMap(maps[index]));
   }
