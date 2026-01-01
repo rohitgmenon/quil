@@ -14,7 +14,6 @@ class Deatilscreen extends StatefulWidget {
 
 class _DeatilscreenState extends State<Deatilscreen> {
   static final _importance = ['High', 'Low'];
-
   late TextEditingController _title;
   late TextEditingController _content;
   late int importance;
@@ -22,7 +21,6 @@ class _DeatilscreenState extends State<Deatilscreen> {
   @override
   void initState() {
     super.initState();
-
     _title = TextEditingController(text: widget.notes?.title ?? '');
     _content = TextEditingController(text: widget.notes?.content ?? '');
     importance = widget.notes?.importance ?? 1;

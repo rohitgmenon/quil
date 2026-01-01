@@ -22,7 +22,16 @@ class _NotelistState extends State<Notelist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Notes')),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Notes'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 25.0),
+            child: IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+          ),
+        ],
+      ),
       body: mainlist(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -41,30 +50,36 @@ class _NotelistState extends State<Notelist> {
     final notes = context.watch<Notesprovider>().notes;
     return ListView.builder(
       itemCount: notes.length,
+
       itemBuilder: (BuildContext context, index) {
         final note = notes[index];
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: getcolor(note.importance),
-              child: geticon(note.importance),
-            ),
-            title: Text(note.title),
-            subtitle: Text(note.content),
-            trailing: IconButton(
-              onPressed: () {
-                delete(context, note);
+        return Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: Card(
+            color: Colors.white,
+            elevation: 2.0,
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: getcolor(note.importance),
+                child: geticon(note.importance),
+              ),
+              title: Text(note.title),
+              subtitle: Text(note.content.trimRight()),
+              trailing: IconButton(
+                onPressed: () {
+                  delete(context, note);
+                },
+                icon: Icon(Icons.delete),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) => Deatilscreen(notes: note),
+                  ),
+                );
               },
-              icon: Icon(Icons.delete),
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (ctx) => Deatilscreen(notes: note)),
-              );
-            },
           ),
         );
       },
@@ -87,13 +102,13 @@ class _NotelistState extends State<Notelist> {
   Icon geticon(int importance) {
     switch (importance) {
       case 1:
-        return Icon(Icons.play_arrow);
+        return Icon(Icons.priority_high_outlined);
 
       case 2:
-        return Icon(Icons.keyboard_arrow_right);
+        return Icon(Icons.low_priority_outlined);
 
       default:
-        return Icon(Icons.keyboard_arrow_right);
+        return Icon(Icons.low_priority_outlined);
     }
   }
 
