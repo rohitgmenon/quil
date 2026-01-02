@@ -24,6 +24,7 @@ class _NotelistState extends State<Notelist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quil/components/bottombar.dart';
 import 'package:quil/loacaldb/notemodel.dart';
 import 'package:quil/services/notesprovider.dart';
 import 'package:quil/test/constants.dart';
@@ -70,75 +71,65 @@ class _DeatilscreenState extends State<Deatilscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Notes')),
-      body: Padding(
-        padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
-        child: ListView(
-          children: [
-            ListTile(
-              title: DropdownButton<String>(
-                items: _importance.map((String dropDownStringItem) {
-                  return DropdownMenuItem<String>(
-                    value: dropDownStringItem,
-                    child: Text(dropDownStringItem),
-                  );
-                }).toList(),
-                value: importance == 1 ? 'High' : 'Low',
-                onChanged: (valueSelect) {
-                  setState(() {
-                    importance = valueSelect == 'High' ? 1 : 2;
-                  });
-                },
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _title,
-              decoration: InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            SizedBox(
-              height: 550,
-              child: TextFormField(
-                controller: _content,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  labelText: 'your note',
-                  hintText: "What's on your Mind",
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-
-            SizedBox(width: 24),
-            Row(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _saveNote();
+                ListTile(
+                  title: DropdownButton<String>(
+                    items: _importance.map((String dropDownStringItem) {
+                      return DropdownMenuItem<String>(
+                        value: dropDownStringItem,
+                        child: Text(dropDownStringItem),
+                      );
+                    }).toList(),
+                    value: importance == 1 ? 'High' : 'Low',
+                    onChanged: (valueSelect) {
+                      setState(() {
+                        importance = valueSelect == 'High' ? 1 : 2;
+                      });
                     },
-                    child: Text("Save"),
                   ),
                 ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: widget.notes != null
-                        ? () {
-                            _deleteNote();
-                          }
-                        : null,
-                    child: Text("Delete"),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: _title,
+                  decoration: InputDecoration(
+                    labelText: 'Title',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(
+                  height: 550,
+                  child: TextFormField(
+                    controller: _content,
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      labelText: 'your note',
+                      hintText: "What's on your Mind",
+                      border: InputBorder.none,
+                    ),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          AnimatedPositioned(
+            duration: Duration(milliseconds: 100),
+            bottom: MediaQuery.of(context).viewInsets.top,
+            left: 0,
+            right: 0,
+            child: Bottombar(
+              onsavepress: _saveNote,
+              ondeletepress: _deleteNote,
+              onfixpress: () {},
+              oncampress: () {},
+            ),
+          ),
+        ],
       ),
     );
   }
