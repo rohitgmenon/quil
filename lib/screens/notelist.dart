@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:quil/components/drawer.dart';
+import 'package:quil/components/search.dart';
 import 'package:quil/loacaldb/notemodel.dart';
 import 'package:quil/screens/deatilscreen.dart';
 import 'package:quil/services/notesprovider.dart';
@@ -14,7 +15,6 @@ class Notelist extends StatefulWidget {
 }
 
 class _NotelistState extends State<Notelist> {
-  int count = 0;
   @override
   void initState() {
     super.initState();
@@ -25,6 +25,7 @@ class _NotelistState extends State<Notelist> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+
       appBar: AppBar(
         centerTitle: true,
 
@@ -39,10 +40,14 @@ class _NotelistState extends State<Notelist> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 25.0),
-            child: IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+            child: IconButton(
+              onPressed: () => showSearch(context: context, delegate: Search()),
+              icon: Icon(Icons.search),
+            ),
           ),
         ],
       ),
+
       body: Expanded(child: mainlist()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -132,5 +137,9 @@ class _NotelistState extends State<Notelist> {
 
   void delete(BuildContext ctx, Note note) {
     ctx.read<Notesprovider>().deletenote(note);
+  }
+
+  void loadnotes(BuildContext ctx, Note note) {
+    context.read<Notesprovider>().loadnotes();
   }
 }
