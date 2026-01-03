@@ -9,6 +9,7 @@ class Note {
   final DateTime created;
   final DateTime updated;
   final DateTime? deletedat;
+  final bool isSynced;
   Note({
     String? id,
     required this.userId,
@@ -18,6 +19,7 @@ class Note {
     DateTime? created,
     DateTime? updated,
     this.deletedat,
+    this.isSynced = false,
   }) : assert(importance == 1 || importance == 2),
        id = id ?? const Uuid().v4(),
        created = created ?? DateTime.now(),
@@ -34,6 +36,7 @@ class Note {
       deletedat: map['deletedat'] != null
           ? DateTime.parse(map['deletedat'])
           : null,
+      isSynced: map['isSynced'] == 1,
     );
   }
   Map<String, dynamic> toMap() {
@@ -46,6 +49,7 @@ class Note {
       'created': created.toIso8601String(),
       'updated': updated.toIso8601String(),
       'deletedat': deletedat?.toIso8601String(),
+      'isSynced': isSynced ? 1 : 0,
     };
   }
 
