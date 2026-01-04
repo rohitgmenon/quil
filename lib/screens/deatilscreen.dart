@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:quil/components/bottombar.dart';
 import 'package:quil/loacaldb/notemodel.dart';
 import 'package:quil/services/api.dart';
@@ -126,17 +127,21 @@ class _DeatilscreenState extends State<Deatilscreen> {
             child: Bottombar(
               onsavepress: _saveNote,
               ondeletepress: _deleteNote,
-              onfixpress: () async {
-                final corrected = await spellfixer(_content.text);
-                setState(() {
-                  _content.text = corrected;
-                  isloadind = false;
-                });
+              onfixpress: isloadind
+                  ? null
+                  : () async {
+                      final corrected = await spellfixer(_content.text);
 
-                isloadind
-                    ? CircularProgressIndicator()
-                    : Text("Fixing grammar");
-              },
+                      setState(() {
+                        _content.text = corrected;
+
+                        isloadind = false;
+                      });
+
+                      isloadind
+                          ? CircularProgressIndicator()
+                          : Text("Fixing grammar");
+                    },
 
               oncampress: () {},
             ),
