@@ -1,0 +1,127 @@
+import 'package:flutter/material.dart';
+import 'package:quil/supabase/auth/authservice.dart';
+
+class Registerpage extends StatefulWidget {
+  const Registerpage({super.key});
+
+  @override
+  State<Registerpage> createState() => _RegisterpageState();
+}
+
+class _RegisterpageState extends State<Registerpage> {
+  final authservice = Authservice();
+  final _emailcontrl = TextEditingController();
+  final _passwrdctrl = TextEditingController();
+  final _confirmpass = TextEditingController();
+  void signup() async {
+    final email = _emailcontrl.text;
+    final password = _passwrdctrl.text;
+    final confirmpass = _confirmpass.text;
+    if (password != confirmpass) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("passwords don't match")));
+      return;
+    }
+    try {
+      await authservice.signup(email, password);
+      Navigator.pop(context);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Sorry some unexpected error occurred:$e")),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          "Welcome! Sign Up",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        children: [
+          Text(
+            "Create your account",
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 24),
+          TextField(
+            controller: _emailcontrl,
+            decoration: InputDecoration(
+              labelText: "Email",
+              hintText: "Enter your email",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+              prefixIcon: const Icon(Icons.email_outlined),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _passwrdctrl,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: "Password",
+              hintText: "Enter your password",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+              prefixIcon: const Icon(Icons.lock_outlined),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _confirmpass,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: "Confirm Password",
+              hintText: "Confirm your password",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+              prefixIcon: const Icon(Icons.lock_outlined),
+            ),
+          ),
+          const SizedBox(height: 32),
+          SizedBox(
+            height: 50,
+            child: ElevatedButton(
+              onPressed: signup,
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Sign Up',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
