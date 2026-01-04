@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quil/components/drawertile.dart';
 import 'package:quil/screens/settings.dart';
+import 'package:quil/supabase/auth/authservice.dart';
 
 class Mydraw extends StatelessWidget {
-  const Mydraw({super.key});
+  Mydraw({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +24,18 @@ class Mydraw extends StatelessWidget {
               );
             },
           ),
+          Drawertile(
+            leading: const Icon(Icons.logout),
+            title: "logout",
+            onTap: logout,
+          ),
         ],
       ),
     );
+  }
+
+  final auth = Authservice();
+  void logout() async {
+    await auth.signout();
   }
 }

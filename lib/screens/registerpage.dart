@@ -25,6 +25,7 @@ class _RegisterpageState extends State<Registerpage> {
     }
     try {
       await authservice.signup(email, password);
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
       if (mounted) {
@@ -57,6 +58,7 @@ class _RegisterpageState extends State<Registerpage> {
           const SizedBox(height: 24),
           TextField(
             controller: _emailcontrl,
+
             decoration: InputDecoration(
               labelText: "Email",
               hintText: "Enter your email",

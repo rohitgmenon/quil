@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quil/screens/notelist.dart';
 import 'package:quil/services/notesprovider.dart';
+import 'package:quil/supabase/auth/authgate.dart';
 import 'package:quil/test/constants.dart';
 import 'package:quil/themes/themesprovider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       title: 'Quil',
       debugShowCheckedModeBanner: false,
       theme: Provider.of<Themesprovider>(context).themeData,
-      home: Notelist(),
+      home: Authgate(),
     );
   }
 }

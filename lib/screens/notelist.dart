@@ -59,7 +59,7 @@ class _NotelistState extends State<Notelist> {
         tooltip: 'Addnote',
         child: Icon(Icons.add),
       ),
-      drawer: const Mydraw(),
+      drawer: Mydraw(),
     );
   }
 
