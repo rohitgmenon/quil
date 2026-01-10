@@ -5,21 +5,25 @@ class Note {
   final String userId;
   final String title;
   final String content;
+  final String? summary;
   final int importance;
   final DateTime created;
   final DateTime updated;
   final DateTime? deletedat;
   final bool isSynced;
+  final bool isarchived;
   Note({
     String? id,
     required this.userId,
     required this.title,
     required this.content,
     required this.importance,
+    this.summary,
     DateTime? created,
     DateTime? updated,
     this.deletedat,
     this.isSynced = false,
+    this.isarchived = false,
   }) : assert(importance == 1 || importance == 2),
        id = id ?? const Uuid().v4(),
        created = created ?? DateTime.now(),
@@ -30,6 +34,7 @@ class Note {
       userId: map['userId'] as String,
       title: map['title'] as String,
       content: map['content'] as String,
+      summary: map['summary'] as String?,
       importance: map['importance'] as int,
       created: DateTime.parse(map['created']),
       updated: DateTime.parse(map['updated']),
@@ -37,6 +42,7 @@ class Note {
           ? DateTime.parse(map['deletedat'])
           : null,
       isSynced: map['isSynced'] == 1,
+      isarchived: map['isarchived'] == 1,
     );
   }
   Map<String, dynamic> toMap() {
@@ -45,30 +51,38 @@ class Note {
       'userId': userId,
       'title': title,
       'content': content,
+      'summary': summary,
       'importance': importance,
       'created': created.toIso8601String(),
       'updated': updated.toIso8601String(),
       'deletedat': deletedat?.toIso8601String(),
       'isSynced': isSynced ? 1 : 0,
+      'isarchived': isarchived ? 1 : 0,
     };
   }
 
   Note copyWith({
     String? title,
     String? content,
+    String? summary,
     int? importance,
     DateTime? updated,
     DateTime? deletedat,
+    bool? isarchived,
+    bool? isSynced,
   }) {
     return Note(
       id: id,
       userId: userId,
       title: title ?? this.title,
       content: content ?? this.content,
+      summary: summary ?? this.summary,
       importance: importance ?? this.importance,
       created: created,
       updated: DateTime.now(),
       deletedat: deletedat ?? deletedat,
+      isSynced: isSynced ?? this.isSynced,
+      isarchived: isarchived ?? this.isarchived,
     );
   }
 }

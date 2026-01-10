@@ -10,7 +10,7 @@ mixin Dbhelper {
       join(await getDatabasesPath(), _dbname),
       version: _version,
       onCreate: (db, version) async => await db.execute(
-        'CREATE TABLE NOTES (id TEXT PRIMARY KEY,userId TEXT NOT NULL, title TEXT NOT NULL,content TEXT NOT NULL,importance INTEGER NOT NULL,created  TEXT NOT NULL,updated TEXT NOT NULL ,deletedat TEXT,isSynced INTEGER DEFAULT 0)',
+        'CREATE TABLE NOTES (id TEXT PRIMARY KEY,userId TEXT NOT NULL, summary TEXT,title TEXT NOT NULL,content TEXT NOT NULL,importance INTEGER NOT NULL,created  TEXT NOT NULL,updated TEXT NOT NULL ,deletedat TEXT,isSynced INTEGER DEFAULT 0,isarchived INTEGER DEFAULT 0)',
       ),
     );
   }
