@@ -14,10 +14,20 @@ class _LoginpageState extends State<Loginpage> {
   final _emailcontrl = TextEditingController();
   final _passwrdctrl = TextEditingController();
   void login() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
     final email = _emailcontrl.text;
     final password = _passwrdctrl.text;
     try {
       await authservice.Signinemail(email, password);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(

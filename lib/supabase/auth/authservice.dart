@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Authservice extends ChangeNotifier {
@@ -10,6 +10,7 @@ class Authservice extends ChangeNotifier {
       password: password,
     );
   }
+
   //signup
 
   Future<AuthResponse> signup(String email, String password) async {

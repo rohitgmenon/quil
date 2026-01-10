@@ -14,6 +14,12 @@ class _RegisterpageState extends State<Registerpage> {
   final _passwrdctrl = TextEditingController();
   final _confirmpass = TextEditingController();
   void signup() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
     final email = _emailcontrl.text;
     final password = _passwrdctrl.text;
     final confirmpass = _confirmpass.text;
