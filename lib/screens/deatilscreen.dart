@@ -127,21 +127,21 @@ class _DeatilscreenState extends State<Deatilscreen> {
             child: Bottombar(
               onsavepress: _saveNote,
               ondeletepress: _deleteNote,
-              onfixpress: isloadind
-                  ? null
-                  : () async {
-                      final corrected = await spellfixer(_content.text);
+              onfixpress: () async {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Center(child: CircularProgressIndicator());
+                  },
+                );
+                final corrected = await spellfixer(_content.text);
 
-                      setState(() {
-                        _content.text = corrected;
-
-                        isloadind = false;
-                      });
-
-                      isloadind
-                          ? CircularProgressIndicator()
-                          : Text("Fixing grammar");
-                    },
+                setState(() {
+                  _content.text = corrected;
+                });
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+              },
 
               oncampress: () {},
             ),
