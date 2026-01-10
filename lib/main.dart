@@ -7,17 +7,23 @@ import 'package:quil/themes/themesprovider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Supabase.initialize(
     anonKey: 'sb_publishable_LbNcLs0tLoaJ_6h9nFpQPg_S2Z6g6t1',
     url: 'https://nhpbcnbdpaspmsxasxgo.supabase.co',
   );
+
+  final themeProvider = Themesprovider();
+  await themeProvider.initializeTheme();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (_) => Notesprovider(localuser)..loadnotes(),
         ),
-        ChangeNotifierProvider(create: (context) => Themesprovider()),
+        ChangeNotifierProvider.value(value: themeProvider),
       ],
       child: const MyApp(),
     ),
