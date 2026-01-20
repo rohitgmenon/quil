@@ -15,3 +15,17 @@ Future<String> spellfixer(String text) async {
     return text;
   }
 }
+
+Future<String> summarizer(String text) async {
+  try {
+    final res = await Supabase.instance.client.functions.invoke(
+      'summarizer',
+      body: {'text': text},
+    );
+
+    return res.data['summary0'];
+  } catch (e) {
+    print('error:$e');
+    return text;
+  }
+}

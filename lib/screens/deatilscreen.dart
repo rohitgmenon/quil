@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:quil/components/bottombar.dart';
+import 'package:quil/components/summarysheet.dart';
 import 'package:quil/loacaldb/notemodel.dart';
 import 'package:quil/services/api.dart';
 import 'package:quil/services/notesprovider.dart';
@@ -20,6 +21,7 @@ class _DeatilscreenState extends State<Deatilscreen> {
   late TextEditingController _title;
   late TextEditingController _content;
   late int importance;
+  String? summary;
 
   @override
   void initState() {
@@ -27,6 +29,7 @@ class _DeatilscreenState extends State<Deatilscreen> {
     _title = TextEditingController(text: widget.notes?.title ?? '');
     _content = TextEditingController(text: widget.notes?.content ?? '');
     importance = widget.notes?.importance ?? 1;
+    summary = widget.notes?.summary;
   }
 
   @override
@@ -49,6 +52,7 @@ class _DeatilscreenState extends State<Deatilscreen> {
       id: widget.notes?.id,
       title: _title.text,
       content: _content.text,
+      summary: summary,
       importance: importance,
       created: widget.notes?.created ?? DateTime.now(),
     );
@@ -73,7 +77,7 @@ class _DeatilscreenState extends State<Deatilscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Notes')),
-      body: Column(
+      body: Stack(
         children: [
           Expanded(
             child: ListView(
@@ -143,11 +147,25 @@ class _DeatilscreenState extends State<Deatilscreen> {
                 Navigator.of(context).pop();
               },
 
-              oncampress: () {},
+              oncampress: () => Opensummary(context, content: _content.text),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> Opensummary(BuildContext ctx, {required String content}) async {
+    final newsummary = await showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      builder: (_) =>
+          Summarysheet(content: _content.text, initialsummary: summary),
+    );
+    if (newsummary != null && newsummary.trim().isNotEmpty) {
+      setState(() {
+        summary = newsummary;
+      });
+    }
   }
 }
