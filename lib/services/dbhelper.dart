@@ -59,4 +59,28 @@ mixin Dbhelper {
     }
     return List.generate(maps.length, (index) => Note.fromMap(maps[index]));
   }
+
+  static Future<List<Note>> deletedlist(String userId) async {
+    final db = await _getdb();
+    final List<Map<String, dynamic>> maps = await db.query(
+      "NOTES",
+      where: ' userId =? AND deletedat IS  NOT NULL',
+      whereArgs: [userId],
+      orderBy: 'deletedat DESC',
+    );
+    if (maps.isEmpty) {
+      return [];
+    }
+    return List.generate(maps.length, (index) => Note.fromMap(maps[index]));
+  }
+
+  static Future<int> restore(String noteId) async {
+    final db = await _getdb();
+    return await db.update(
+      'NOTES',
+      {'deletedat': null},
+      where: 'id=?',
+      whereArgs: [noteId],
+    );
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quil/screens/recoverpass.dart';
 import 'package:quil/screens/registerpage.dart';
 import 'package:quil/supabase/auth/authservice.dart';
 
@@ -27,7 +28,6 @@ class _LoginpageState extends State<Loginpage> {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
       // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -96,6 +96,8 @@ class _LoginpageState extends State<Loginpage> {
             child: ElevatedButton(
               onPressed: login,
               style: ElevatedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -116,8 +118,26 @@ class _LoginpageState extends State<Loginpage> {
               child: Text(
                 "New here? Sign up",
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.inversePrimary,
                   fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (ctx) => const Recoverpass()),
+              ),
+              child: Center(
+                child: Text(
+                  "Forgot password",
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

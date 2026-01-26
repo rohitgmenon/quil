@@ -22,6 +22,10 @@ class Authservice extends ChangeNotifier {
     return await _supabase.auth.signOut();
   }
 
+  Future<void> recover(String email) async {
+    return await _supabase.auth.resetPasswordForEmail(email);
+  }
+
   //get user email
   String? getuser() {
     final Session = _supabase.auth.currentSession;
