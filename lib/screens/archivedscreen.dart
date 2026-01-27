@@ -2,25 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:quil/components/drawer.dart';
-import 'package:quil/components/search.dart';
 import 'package:quil/loacaldb/notemodel.dart';
-import 'package:quil/screens/archivedscreen.dart';
 import 'package:quil/screens/deatilscreen.dart';
 import 'package:quil/services/notesprovider.dart';
+import 'package:quil/test/constants.dart';
 
-class Notelist extends StatefulWidget {
-  const Notelist({super.key});
+class ArchivedScreen extends StatefulWidget {
+  const ArchivedScreen({super.key});
 
   @override
-  State<Notelist> createState() => _NotelistState();
+  State<ArchivedScreen> createState() => _ArchivedScreenState();
 }
 
-class _NotelistState extends State<Notelist> {
+class _ArchivedScreenState extends State<ArchivedScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<Notesprovider>().loadnotes();
+    context.read<Notesprovider>().archivedlist(localuser);
   }
 
   @override
@@ -31,31 +29,13 @@ class _NotelistState extends State<Notelist> {
       appBar: AppBar(
         centerTitle: true,
 
-        title: InkWell(
-          onLongPress: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (ctx) => ArchivedScreen()),
-            );
-          },
-          child: Text(
-            'Notes',
-            style: GoogleFonts.dmSerifText(
-              fontSize: 28,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
+        title: Text(
+          ' Archived Notes',
+          style: GoogleFonts.dmSerifText(
+            fontSize: 28,
+            color: Theme.of(context).colorScheme.inversePrimary,
           ),
         ),
-
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 25.0),
-            child: IconButton(
-              onPressed: () => showSearch(context: context, delegate: Search()),
-              icon: Icon(Icons.search),
-            ),
-          ),
-        ],
       ),
 
       body: Expanded(child: mainlist()),
@@ -69,12 +49,11 @@ class _NotelistState extends State<Notelist> {
         tooltip: 'Addnote',
         child: Icon(Icons.add),
       ),
-      drawer: Mydraw(),
     );
   }
 
   ListView mainlist() {
-    final notes = context.watch<Notesprovider>().notes;
+    final notes = context.watch<Notesprovider>().archivedNotes;
     return ListView.builder(
       itemCount: notes.length,
 
@@ -92,12 +71,12 @@ class _NotelistState extends State<Notelist> {
                 children: [
                   SlidableAction(
                     onPressed: (ctx) {
-                      archive(ctx, note);
+                      unarchive(ctx, note);
                     },
                     backgroundColor: archivetheme(context),
                     foregroundColor: Colors.white,
-                    icon: Icons.archive,
-                    label: "Archive",
+                    icon: Icons.unarchive,
+                    label: "Unarchive",
                   ),
                 ],
               ),
@@ -161,21 +140,17 @@ class _NotelistState extends State<Notelist> {
     }
   }
 
-  void delete(BuildContext ctx, Note note) {
-    ctx.read<Notesprovider>().deletenote(note);
-  }
-
-  void loadnotes(BuildContext ctx, Note note) {
-    context.read<Notesprovider>().loadnotes();
-  }
-
-  void archive(BuildContext ctx, Note note) {
-    ctx.read<Notesprovider>().archivenote(note);
-  }
-
   Color archivetheme(BuildContext ctx) {
     return Theme.of(context).brightness == Brightness.dark
         ? const Color(0xFF2E7D32)
         : const Color(0xFF4CAF50);
+  }
+
+  void delete(BuildContext ctx, Note note) {
+    ctx.read<Notesprovider>().deletenote(note);
+  }
+
+  void unarchive(BuildContext ctx, Note note) {
+    ctx.read<Notesprovider>().undo(note);
   }
 }

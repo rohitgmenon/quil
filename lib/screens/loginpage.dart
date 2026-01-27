@@ -25,8 +25,12 @@ class _LoginpageState extends State<Loginpage> {
     final password = _passwrdctrl.text;
     try {
       await authservice.Signinemail(email, password);
+
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
+
+      // ignore: use_build_context_synchronously
+
       // ignore: use_build_context_synchronously
     } catch (e) {
       if (mounted) {

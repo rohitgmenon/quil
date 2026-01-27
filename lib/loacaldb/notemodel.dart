@@ -11,7 +11,7 @@ class Note {
   final DateTime updated;
   final DateTime? deletedat;
   final bool isSynced;
-  final bool isarchived;
+  final DateTime? isarchived;
   Note({
     String? id,
     required this.userId,
@@ -23,7 +23,7 @@ class Note {
     DateTime? updated,
     this.deletedat,
     this.isSynced = false,
-    this.isarchived = false,
+    this.isarchived,
   }) : assert(importance == 1 || importance == 2),
        id = id ?? const Uuid().v4(),
        created = created ?? DateTime.now(),
@@ -42,7 +42,9 @@ class Note {
           ? DateTime.parse(map['deletedat'])
           : null,
       isSynced: map['isSynced'] == 1,
-      isarchived: map['isarchived'] == 1,
+      isarchived: map['isarchived'] != null
+          ? DateTime.parse(map['isarchived'])
+          : null,
     );
   }
   Map<String, dynamic> toMap() {
@@ -57,7 +59,7 @@ class Note {
       'updated': updated.toIso8601String(),
       'deletedat': deletedat?.toIso8601String(),
       'isSynced': isSynced ? 1 : 0,
-      'isarchived': isarchived ? 1 : 0,
+      'isarchived': isarchived?.toIso8601String(),
     };
   }
 
@@ -68,7 +70,7 @@ class Note {
     int? importance,
     DateTime? updated,
     DateTime? deletedat,
-    bool? isarchived,
+    DateTime? isarchived,
     bool? isSynced,
   }) {
     return Note(
@@ -80,7 +82,7 @@ class Note {
       importance: importance ?? this.importance,
       created: created,
       updated: DateTime.now(),
-      deletedat: deletedat ?? deletedat,
+      deletedat: deletedat ?? this.deletedat,
       isSynced: isSynced ?? this.isSynced,
       isarchived: isarchived ?? this.isarchived,
     );
