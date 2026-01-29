@@ -35,7 +35,18 @@ class _RegisterpageState extends State<Registerpage> {
       await authservice.signup(email, password);
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Registration successful! Please check your email to confirm your account.",
+          ),
+          duration: Duration(seconds: 5),
+        ),
+      );
     } catch (e) {
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Sorry some unexpected error occurred:$e")),

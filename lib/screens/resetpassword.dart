@@ -122,17 +122,27 @@ class _ResetpasswordState extends State<Resetpassword> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("passwords don't match")));
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+      return;
+    }
 
-      try {
-        await authservice.verify(email, token);
-        await authservice.update(confirmpass);
-        Navigator.pop(context);
-      } catch (e) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
-      }
+    try {
+      await authservice.verify(email, token);
+      await authservice.update(confirmpass);
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password updated successfully")),
+      );
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+      ScaffoldMessenger.of(
+        // ignore: use_build_context_synchronously
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 }
