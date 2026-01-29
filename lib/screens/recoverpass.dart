@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quil/screens/resetpassword.dart';
 import 'package:quil/supabase/auth/authservice.dart';
 
 class Recoverpass extends StatefulWidget {
@@ -10,10 +11,31 @@ class Recoverpass extends StatefulWidget {
 
 class _RecoverpassState extends State<Recoverpass> {
   final _email = TextEditingController();
+
   final authservice = Authservice();
   void recover() async {
     final email = _email.text;
-    return await authservice.recover(email);
+    await authservice.recover(email);
+    showDialog(
+      // ignore: use_build_context_synchronously
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Email Sent"),
+        content: const Text("Check your email for Token(check the spam to :))"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => Resetpassword(email2: email)),
+              );
+            },
+            child: const Text("ok"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -60,7 +82,7 @@ class _RecoverpassState extends State<Recoverpass> {
                 ),
               ),
               child: const Text(
-                'Recieve recovery email',
+                'GET TOKEN',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),

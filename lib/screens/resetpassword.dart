@@ -2,47 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quil/supabase/auth/authservice.dart';
 
-class Registerpage extends StatefulWidget {
-  const Registerpage({super.key});
+class Resetpassword extends StatefulWidget {
+  final String email2;
+
+  const Resetpassword({super.key, required this.email2});
 
   @override
-  State<Registerpage> createState() => _RegisterpageState();
+  State<Resetpassword> createState() => _ResetpasswordState();
 }
 
-class _RegisterpageState extends State<Registerpage> {
+class _ResetpasswordState extends State<Resetpassword> {
   final authservice = Authservice();
-  final _emailcontrl = TextEditingController();
-  final _passwrdctrl = TextEditingController();
+  final _token = TextEditingController();
+  final _password = TextEditingController();
   final _confirmpass = TextEditingController();
-
-  void signup() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Center(child: CircularProgressIndicator());
-      },
-    );
-    final email = _emailcontrl.text;
-    final password = _passwrdctrl.text;
-    final confirmpass = _confirmpass.text;
-    if (password != confirmpass) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("passwords don't match")));
-      return;
-    }
-    try {
-      await authservice.signup(email, password);
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Sorry some unexpected error occurred:$e")),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,26 +23,20 @@ class _RegisterpageState extends State<Registerpage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "Welcome! Sign Up",
+          "Reset Password",
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 22),
         ),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         children: [
-          Text(
-            "Create your account",
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-          ),
           const SizedBox(height: 24),
           TextField(
-            controller: _emailcontrl,
+            controller: _token,
 
             decoration: InputDecoration(
-              labelText: "Email",
-              hintText: "Enter your email",
+              labelText: "TOken",
+              hintText: "Enter your Token",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -82,11 +49,11 @@ class _RegisterpageState extends State<Registerpage> {
           ),
           const SizedBox(height: 16),
           TextField(
-            controller: _passwrdctrl,
+            controller: _password,
             obscureText: true,
             decoration: InputDecoration(
               labelText: "Password",
-              hintText: "Minimum of six characters",
+              hintText: "Minimum six letters",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -103,7 +70,7 @@ class _RegisterpageState extends State<Registerpage> {
             obscureText: true,
             decoration: InputDecoration(
               labelText: "Confirm Password",
-              hintText: "Confirm your password",
+
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -118,7 +85,7 @@ class _RegisterpageState extends State<Registerpage> {
           SizedBox(
             height: 50,
             child: ElevatedButton(
-              onPressed: signup,
+              onPressed: reset,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -127,7 +94,7 @@ class _RegisterpageState extends State<Registerpage> {
                 ),
               ),
               child: Text(
-                'Sign Up',
+                'Reset Password',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -138,5 +105,34 @@ class _RegisterpageState extends State<Registerpage> {
         ],
       ),
     );
+  }
+
+  void reset() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+    final token = _token.text;
+    final email = widget.email2;
+    final password = _password.text;
+    final confirmpass = _confirmpass.text;
+    if (password != confirmpass) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("passwords don't match")));
+
+      try {
+        await authservice.verify(email, token);
+        await authservice.update(confirmpass);
+        Navigator.pop(context);
+      } catch (e) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
   }
 }

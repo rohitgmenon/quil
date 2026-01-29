@@ -32,4 +32,16 @@ class Authservice extends ChangeNotifier {
     final user = Session?.user;
     return user?.email;
   }
+
+  Future<AuthResponse> verify(String email, String token) async {
+    return _supabase.auth.verifyOTP(
+      type: OtpType.recovery,
+      email: email,
+      token: token,
+    );
+  }
+
+  Future update(String password) async {
+    return _supabase.auth.updateUser(UserAttributes(password: password));
+  }
 }
