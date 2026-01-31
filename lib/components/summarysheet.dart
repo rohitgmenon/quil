@@ -38,7 +38,13 @@ class _SummarysheetState extends State<Summarysheet> {
           if (!hassummary)
             ElevatedButton(
               onPressed: loading ? null : generate,
-              child: Text(loading ? "Generating..." : "Generate Summary"),
+
+              child: Text(
+                loading ? "Generating..." : "Generate Summary",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
+              ),
             )
           else
             Column(
