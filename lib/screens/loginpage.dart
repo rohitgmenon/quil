@@ -37,6 +37,7 @@ class _LoginpageState extends State<Loginpage> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text("Sorry an error ocurred:$e")));
+        Navigator.of(context).pop();
       }
     }
   }

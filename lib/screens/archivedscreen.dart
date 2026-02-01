@@ -39,16 +39,6 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
       ),
 
       body: Expanded(child: mainlist()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (ctx) => Deatilscreen()),
-          );
-        },
-        tooltip: 'Addnote',
-        child: Icon(Icons.add),
-      ),
     );
   }
 
@@ -146,8 +136,10 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
         : const Color(0xFF4CAF50);
   }
 
-  void delete(BuildContext ctx, Note note) {
-    ctx.read<Notesprovider>().deletenote(note);
+  void delete(BuildContext ctx, Note note) async {
+    await ctx.read<Notesprovider>().deletenote(note);
+    // ignore: use_build_context_synchronously
+    await ctx.read<Notesprovider>().archivedlist(localuser);
   }
 
   void unarchive(BuildContext ctx, Note note) {

@@ -88,7 +88,7 @@ mixin Dbhelper {
     final db = await _getdb();
     final List<Map<String, dynamic>> maps = await db.query(
       "NOTES",
-      where: ' userId =? AND isarchived IS  NOT NULL',
+      where: ' userId =? AND isarchived IS  NOT NULL AND deletedat IS NULL',
       whereArgs: [userId],
       orderBy: 'isarchived DESC',
     );
