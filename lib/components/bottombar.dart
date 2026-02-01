@@ -35,7 +35,7 @@ class Bottombar extends StatelessWidget {
             padding: const EdgeInsets.all(36),
             child: IconButton(
               onPressed: onfixpress,
-              icon: Icon(Icons.auto_awesome),
+              icon: Icon(Icons.auto_fix_high),
             ),
           ),
           Padding(

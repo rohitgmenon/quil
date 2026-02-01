@@ -5,9 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:quil/components/drawer.dart';
 import 'package:quil/components/search.dart';
 import 'package:quil/loacaldb/notemodel.dart';
+// ignore: unused_import
 import 'package:quil/screens/archivedscreen.dart';
 import 'package:quil/screens/deatilscreen.dart';
+import 'package:quil/screens/lockscreen.dart';
+
 import 'package:quil/services/notesprovider.dart';
+import 'package:quil/services/securestorage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Notelist extends StatefulWidget {
   const Notelist({super.key});
@@ -23,6 +28,22 @@ class _NotelistState extends State<Notelist> {
     context.read<Notesprovider>().loadnotes();
   }
 
+  bool isLocked = false;
+  Future<void> onlock(bool value) async {
+    final pin = await pinStorage.getPin();
+    if (value) {
+      if (pin == null) {
+        setState(() {
+          isLocked = false;
+        });
+        return;
+      }
+      setState(() {
+        isLocked = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,11 +53,20 @@ class _NotelistState extends State<Notelist> {
         centerTitle: true,
 
         title: InkWell(
-          onLongPress: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (ctx) => ArchivedScreen()),
-            );
+          onLongPress: () async {
+            final prefs = await SharedPreferences.getInstance();
+            final locked = prefs.getBool('archive_locked') ?? false;
+            if (!locked) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ArchivedScreen()),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const Lockscreen()),
+              );
+            }
           },
           child: Text(
             'Notes',

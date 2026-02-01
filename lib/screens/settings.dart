@@ -2,10 +2,49 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:quil/screens/setpass.dart';
+import 'package:quil/screens/updatescreen.dart';
+import 'package:quil/services/securestorage.dart';
 import 'package:quil/themes/themesprovider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  bool isLocked = false;
+  Future<void> onlock(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (value) {
+      final pin = await pinStorage.getPin();
+      if (pin == null) {
+        Navigator.push(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (_) => const Setpass()),
+        );
+        return;
+      }
+    }
+    await prefs.setBool('archive_locked', value);
+    setState(() => isLocked = value);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLockPref();
+  }
+
+  Future<void> _loadLockPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    final locked = prefs.getBool('archive_locked') ?? false;
+    setState(() => isLocked = locked);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,27 +61,92 @@ class Settings extends StatelessWidget {
           ),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-        margin: EdgeInsets.only(left: 25, right: 25, top: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Column(
           children: [
-            Text(
-              "Darkmode",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.inversePrimary,
+            Card(
+              color: Theme.of(context).colorScheme.primary,
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-            CupertinoSwitch(
-              value: Provider.of<Themesprovider>(context, listen: false).isDark,
-              onChanged: (value) =>
-                  Provider.of<Themesprovider>(context, listen: false).toggle(),
+              child: Column(
+                children: [
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    title: Text(
+                      "Darkmode",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
+                    trailing: CupertinoSwitch(
+                      value: Provider.of<Themesprovider>(
+                        context,
+                        listen: false,
+                      ).isDark,
+                      onChanged: (value) => Provider.of<Themesprovider>(
+                        context,
+                        listen: false,
+                      ).toggle(),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.inversePrimary.withValues(alpha: .12),
+                  ),
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    title: Text(
+                      "Lock Archive",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
+                    trailing: CupertinoSwitch(
+                      value: isLocked,
+                      onChanged: (value) => onlock(value),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.inversePrimary.withValues(alpha: .12),
+                  ),
+                  Opacity(
+                    opacity: isLocked ? 1 : 0.20,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      enabled: isLocked,
+                      title: Text(
+                        "Update archive pasword",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Updatescreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -35,7 +35,7 @@ class _ResetpasswordState extends State<Resetpassword> {
             controller: _token,
 
             decoration: InputDecoration(
-              labelText: "TOken",
+              labelText: "TOKEN",
               hintText: "Enter your Token",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -44,7 +44,7 @@ class _ResetpasswordState extends State<Resetpassword> {
                 horizontal: 16,
                 vertical: 16,
               ),
-              prefixIcon: const Icon(Icons.email_outlined),
+              prefixIcon: const Icon(Icons.key),
             ),
           ),
           const SizedBox(height: 16),

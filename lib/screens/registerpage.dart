@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:quil/supabase/auth/authservice.dart';
 
 class Registerpage extends StatefulWidget {
@@ -33,17 +34,20 @@ class _RegisterpageState extends State<Registerpage> {
     }
     try {
       await authservice.signup(email, password);
+      // Auto sign-in after successful registration
+      await authservice.Signinemail(email, password);
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            "Registration successful! Please check your email to confirm your account.",
-          ),
-          duration: Duration(seconds: 5),
+          content: Text("Registration successful! Logged in..."),
+          duration: Duration(seconds: 2),
         ),
       );
+      // The auth state change will automatically redirect to Notelist via Authgate
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
     } catch (e) {
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
