@@ -17,8 +17,54 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool isLocked = false;
+  final contrl = TextEditingController();
   Future<void> onlock(bool value) async {
     final prefs = await SharedPreferences.getInstance();
+    if (!value) {
+      final userpin = await pinStorage.getPin();
+      if (userpin == null) return;
+      if (!mounted) return;
+      contrl.clear();
+      final enteredpin = await showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Enter pin'),
+          content: TextField(
+            controller: contrl,
+            keyboardType: TextInputType.number,
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'cancel',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, contrl.text),
+              child: Text(
+                'ok',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      if (!mounted) return;
+      if (enteredpin == null || enteredpin != userpin) {
+        setState(() {
+          isLocked = true;
+        });
+        return;
+      }
+    }
+
     if (value) {
       final pin = await pinStorage.getPin();
       if (pin == null) {
@@ -27,10 +73,14 @@ class _SettingsState extends State<Settings> {
           context,
           MaterialPageRoute(builder: (_) => const Setpass()),
         );
+        setState(() {
+          isLocked = false;
+        });
         return;
       }
     }
     await prefs.setBool('archive_locked', value);
+    if (!mounted) return;
     setState(() => isLocked = value);
   }
 

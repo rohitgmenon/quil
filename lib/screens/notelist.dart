@@ -31,6 +31,7 @@ class _NotelistState extends State<Notelist> {
   bool isLocked = false;
   Future<void> onlock(bool value) async {
     final pin = await pinStorage.getPin();
+    if (!mounted) return;
     if (value) {
       if (pin == null) {
         setState(() {
@@ -56,13 +57,16 @@ class _NotelistState extends State<Notelist> {
           onLongPress: () async {
             final prefs = await SharedPreferences.getInstance();
             final locked = prefs.getBool('archive_locked') ?? false;
+            if (!mounted) return;
             if (!locked) {
               Navigator.push(
+                // ignore: use_build_context_synchronously
                 context,
                 MaterialPageRoute(builder: (_) => const ArchivedScreen()),
               );
             } else {
               Navigator.push(
+                // ignore: use_build_context_synchronously
                 context,
                 MaterialPageRoute(builder: (_) => const Lockscreen()),
               );
