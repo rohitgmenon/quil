@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:quil/screens/setpass.dart';
 import 'package:quil/screens/updatescreen.dart';
 import 'package:quil/services/securestorage.dart';
+import 'package:quil/services/syncengine.dart';
 import 'package:quil/themes/themesprovider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +18,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool isLocked = false;
+  bool _syncenabled = false;
   final contrl = TextEditingController();
   Future<void> onlock(bool value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -88,12 +90,21 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
     _loadLockPref();
+    _loadLockPref();
+    loadsync();
   }
 
   Future<void> _loadLockPref() async {
     final prefs = await SharedPreferences.getInstance();
     final locked = prefs.getBool('archive_locked') ?? false;
     setState(() => isLocked = locked);
+  }
+
+  Future<void> loadsync() async {
+    final value = await SyncSeetings.isenabled();
+    setState(() {
+      _syncenabled = value;
+    });
   }
 
   @override
@@ -192,6 +203,32 @@ class _SettingsState extends State<Settings> {
                             builder: (context) => Updatescreen(),
                           ),
                         );
+                      },
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.inversePrimary.withValues(alpha: .12),
+                  ),
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    title: Text(
+                      "Sync",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
+                    trailing: CupertinoSwitch(
+                      value: _syncenabled,
+                      onChanged: (value) async {
+                        setState(() {
+                          _syncenabled = value;
+                        });
+                        await SyncSeetings.setEnabled(value);
                       },
                     ),
                   ),

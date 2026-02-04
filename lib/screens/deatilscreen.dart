@@ -55,6 +55,8 @@ class _DeatilscreenState extends State<Deatilscreen> {
       summary: summary,
       importance: importance,
       created: widget.notes?.created ?? DateTime.now(),
+      isSynced: false,
+      updated: widget.notes?.created ?? DateTime.now(),
     );
 
     if (widget.notes == null) {

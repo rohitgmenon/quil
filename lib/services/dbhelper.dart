@@ -37,7 +37,11 @@ mixin Dbhelper {
 
   static Future<void> deletenote(Note note) async {
     final db = await _getdb();
-    final deletedNote = note.copyWith(deletedat: DateTime.now());
+    final deletedNote = note.copyWith(
+      deletedat: DateTime.now(),
+      updated: DateTime.now(),
+      isSynced: false,
+    );
     await db.update(
       'NOTES',
       deletedNote.toMap(),
@@ -78,7 +82,11 @@ mixin Dbhelper {
     final db = await _getdb();
     return await db.update(
       'NOTES',
-      {'deletedat': null},
+      {
+        'deletedat': null,
+        'updated': DateTime.now().toIso8601String(),
+        'isSynced': false,
+      },
       where: 'id=?',
       whereArgs: [noteId],
     );
@@ -102,7 +110,11 @@ mixin Dbhelper {
     final db = await _getdb();
     return await db.update(
       'NOTES',
-      {'isarchived': null},
+      {
+        'isarchived': null,
+        'updated': DateTime.now().toIso8601String(),
+        'isSynced': false,
+      },
       where: 'id=?',
       whereArgs: [noteId],
     );
@@ -110,12 +122,57 @@ mixin Dbhelper {
 
   static Future<void> archivenotes(Note note) async {
     final db = await _getdb();
-    final archivednote = note.copyWith(isarchived: DateTime.now());
+    final archivednote = note.copyWith(
+      isarchived: DateTime.now(),
+      updated: DateTime.now(),
+      isSynced: false,
+    );
     await db.update(
       'NOTES',
       archivednote.toMap(),
       where: 'id=?AND userId=?',
       whereArgs: [note.id, note.userId],
     );
+  }
+
+  static Future<List<Note>> unsynced(String userId) async {
+    final db = await _getdb();
+    final List<Map<String, dynamic>> maps = await db.query(
+      "NOTES",
+      where: ' userId =? AND isSynced=0',
+      whereArgs: [userId],
+    );
+    if (maps.isEmpty) {
+      return [];
+    }
+    return List.generate(maps.length, (index) => Note.fromMap(maps[index]));
+  }
+
+  static Future<int> upsertlocal(Note note) async {
+    final db = await _getdb();
+    return await db.insert(
+      'NOTES',
+      note.toMap()..['isSynced'] = 1,
+
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<int> marked(String id) async {
+    final db = await _getdb();
+    return await db.update(
+      'NOTES',
+      {'isSynced': 1, 'updated': DateTime.now().toIso8601String()},
+
+      where: 'id=?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<Note?> getbyid(String id) async {
+    final db = await _getdb();
+    final maps = await db.query('NOTES', where: 'id=?', whereArgs: [id]);
+    if (maps.isEmpty) return null;
+    return Note.fromMap(maps.first);
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quil/screens/recoverpass.dart';
 import 'package:quil/screens/registerpage.dart';
+import 'package:quil/services/syncengine.dart';
 import 'package:quil/supabase/auth/authservice.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
@@ -25,6 +27,8 @@ class _LoginpageState extends State<Loginpage> {
     final password = _passwrdctrl.text;
     try {
       await authservice.Signinemail(email, password);
+      final userid = Supabase.instance.client.auth.currentUser!.id;
+      await Syncengine(Supabase.instance.client).retrive(userid);
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
