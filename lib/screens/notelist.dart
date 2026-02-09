@@ -116,7 +116,10 @@ class _NotelistState extends State<Notelist> {
         tooltip: 'Addnote',
         mini: false,
         elevation: 0,
-        child: Icon(Icons.add_rounded),
+        child: Icon(
+          Icons.add_rounded,
+          color: Theme.of(context).colorScheme.surface,
+        ),
       ),
       drawer: Hiddendraw(),
     );
