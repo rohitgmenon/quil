@@ -13,6 +13,7 @@ class Summarysheet extends StatefulWidget {
 class _SummarysheetState extends State<Summarysheet> {
   late String? summary;
   bool loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +31,7 @@ class _SummarysheetState extends State<Summarysheet> {
   @override
   Widget build(BuildContext context) {
     final hassummary = summary != null && summary!.trim().isNotEmpty;
+
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -38,7 +40,6 @@ class _SummarysheetState extends State<Summarysheet> {
           if (!hassummary)
             ElevatedButton(
               onPressed: loading ? null : generate,
-
               child: Text(
                 loading ? "Generating..." : "Generate Summary",
                 style: TextStyle(
@@ -61,13 +62,33 @@ class _SummarysheetState extends State<Summarysheet> {
                   child: SelectableText(summary!),
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context, summary),
-
-                    child: const Text("OK"),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(
+                          context,
+                          '',
+                        ), // Return empty string to delete
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red,
+                        ),
+                        child: const Text("Delete Summary"),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context, summary),
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.inversePrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

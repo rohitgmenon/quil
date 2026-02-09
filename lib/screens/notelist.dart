@@ -136,7 +136,9 @@ class _NotelistState extends State<Notelist> {
           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
           child: Card(
             margin: const EdgeInsets.symmetric(vertical: 3.5, horizontal: 2.5),
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(
+              context,
+            ).colorScheme.secondary.withValues(alpha: 0.1),
             elevation: 0,
             child: Slidable(
               startActionPane: ActionPane(

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,6 @@ class Deatilscreen extends StatefulWidget {
 }
 
 class _DeatilscreenState extends State<Deatilscreen> {
-  static final _importance = ['High', 'Low'];
   late TextEditingController _title;
   late TextEditingController _content;
   late int importance;
@@ -68,48 +68,30 @@ class _DeatilscreenState extends State<Deatilscreen> {
     Navigator.pop(context);
   }
 
-  void _deleteNote() {
-    if (widget.notes != null) {
-      context.read<Notesprovider>().deletenote(widget.notes!);
-      Navigator.pop(context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Notes')),
-      body: Stack(
+      appBar: AppBar(centerTitle: true, title: Text('Notes')),
+      body: Column(
         children: [
           Expanded(
             child: ListView(
-              padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
+              padding: EdgeInsets.only(
+                top: 15.0,
+                left: 10.0,
+                right: 10.0,
+                bottom: 80.0,
+              ),
               children: [
-                ListTile(
-                  title: DropdownButton<String>(
-                    items: _importance.map((String dropDownStringItem) {
-                      return DropdownMenuItem<String>(
-                        value: dropDownStringItem,
-                        child: Text(dropDownStringItem),
-                      );
-                    }).toList(),
-                    value: importance == 1 ? 'High' : 'Low',
-                    onChanged: (valueSelect) {
-                      setState(() {
-                        importance = valueSelect == 'High' ? 1 : 2;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(height: 16),
+                SizedBox(height: 8),
                 TextFormField(
                   controller: _title,
                   decoration: InputDecoration(
                     labelText: 'Title',
-
-                    border: OutlineInputBorder(),
+                    border: InputBorder.none,
                   ),
                 ),
+                SizedBox(height: 16),
                 SizedBox(
                   height: 550,
                   child: TextFormField(
@@ -126,32 +108,107 @@ class _DeatilscreenState extends State<Deatilscreen> {
               ],
             ),
           ),
-          AnimatedPositioned(
-            duration: Duration(milliseconds: 100),
-            bottom: MediaQuery.of(context).viewInsets.top,
-            left: 0,
-            right: 0,
-            child: Bottombar(
-              onsavepress: _saveNote,
-              ondeletepress: _deleteNote,
-              onfixpress: () async {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Center(child: CircularProgressIndicator());
-                  },
-                );
-                final corrected = await spellfixer(_content.text);
+          Bottombar(
+            onsavepress: _saveNote,
+            ondeletepress: () {
+              int selectedImportance = importance;
 
-                setState(() {
-                  _content.text = corrected;
-                });
-                // ignore: use_build_context_synchronously
-                Navigator.of(context).pop();
-              },
+              showCupertinoModalPopup(
+                context: context,
+                builder: (context) => Container(
+                  height: 250,
+                  color: CupertinoColors.systemBackground.resolveFrom(context),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CupertinoButton(
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                            ),
 
-              oncampress: () => Opensummary(context, content: _content.text),
-            ),
+                            CupertinoButton(
+                              child: Text(
+                                'Done',
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() => importance = selectedImportance);
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: CupertinoPicker(
+                          scrollController: FixedExtentScrollController(
+                            initialItem: importance - 1,
+                          ),
+                          itemExtent: 50,
+                          onSelectedItemChanged: (index) {
+                            selectedImportance = index + 1;
+                          },
+                          children: [
+                            Center(
+                              child: Text(
+                                '⚠️ High Priority',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                '📝 Low Priority',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.inversePrimary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            onfixpress: () async {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Center(child: CircularProgressIndicator());
+                },
+              );
+              final corrected = await spellfixer(_content.text);
+              setState(() {
+                _content.text = corrected;
+              });
+              // ignore: use_build_context_synchronously
+              Navigator.of(context).pop();
+            },
+            oncampress: () => Opensummary(context, content: _content.text),
           ),
         ],
       ),
@@ -165,10 +222,22 @@ class _DeatilscreenState extends State<Deatilscreen> {
       builder: (_) =>
           Summarysheet(content: _content.text, initialsummary: summary),
     );
-    if (newsummary != null && newsummary.trim().isNotEmpty) {
+
+    if (newsummary != null) {
       setState(() {
-        summary = newsummary;
+        // Empty string means delete, null means cancelled
+        summary = newsummary.trim().isEmpty ? null : newsummary;
       });
+
+      // Optional: Show feedback when deleted
+      if (newsummary.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Summary deleted'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
     }
   }
 }
