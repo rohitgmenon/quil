@@ -63,40 +63,6 @@ class Note {
     };
   }
 
-  Map<String, dynamic> tocloudMap() {
-    return {
-      'id': id,
-      'user _id': userId,
-      'title': title,
-      'content': content,
-      'summary': summary,
-      'importance': importance,
-      'created': created.toIso8601String(),
-      'updated': updated.toIso8601String(),
-      'deleted': deletedat?.toIso8601String(),
-
-      'archived': isarchived?.toIso8601String(),
-    };
-  }
-
-  factory Note.fromcloud(Map<String, dynamic> map) {
-    return Note(
-      id: map['id'],
-      userId: map['user_id'],
-      title: map['title'],
-      content: map['content'],
-      summary: map['summary'],
-      importance: map['importance'],
-      created: DateTime.parse(map['created']),
-      updated: DateTime.parse(map['updated']),
-      deletedat: map['deleted'] != null ? DateTime.parse(map['deleted']) : null,
-      isSynced: map['isSynced'] == 1,
-      isarchived: map['archived'] != null
-          ? DateTime.parse(map['archived'])
-          : null,
-    );
-  }
-
   Note copyWith({
     String? title,
     String? content,
@@ -119,6 +85,55 @@ class Note {
       deletedat: deletedat ?? this.deletedat,
       isSynced: isSynced ?? this.isSynced,
       isarchived: isarchived ?? this.isarchived,
+    );
+  }
+}
+
+class Tasks {
+  final String id;
+  final String userId;
+  final String task;
+  final bool isdone;
+  final DateTime updated;
+  final bool isdelete;
+  Tasks({
+    String? id,
+    required this.userId,
+    required this.task,
+    required this.isdone,
+    DateTime? updated,
+    this.isdelete = false,
+  }) : id = id ?? const Uuid().v4(),
+       updated = updated ?? DateTime.now();
+  factory Tasks.fromMap(Map<String, dynamic> map) {
+    return Tasks(
+      id: map['id'] as String,
+      userId: map['userId'] as String,
+      task: map['task'] as String,
+      isdone: map['isdone'] == 1,
+      updated: DateTime.parse(map['updated']),
+    );
+  }
+  Map<String, dynamic> tomap() {
+    return {
+      'id': id,
+      'task': task,
+      'userId': userId,
+      'isdone': isdone,
+      'updated': updated.toIso8601String(),
+      'isdelete': isdelete ? 1 : 0,
+    };
+  }
+
+  Tasks copyWith({String? task, bool? isdone, bool? isdelete}) {
+    return Tasks(
+      id: id, // never changes
+      task: task ?? this.task,
+      isdone: isdone ?? this.isdone,
+      isdelete: isdelete ?? this.isdelete,
+      updated: DateTime.now(),
+      userId: userId,
+      // always update on change
     );
   }
 }

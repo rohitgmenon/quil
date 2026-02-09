@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:quil/screens/setpass.dart';
 import 'package:quil/screens/updatescreen.dart';
 import 'package:quil/services/securestorage.dart';
-import 'package:quil/services/syncengine.dart';
+import 'package:quil/supabase/auth/authservice.dart';
 import 'package:quil/themes/themesprovider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +19,6 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool isLocked = false;
-  bool _syncenabled = false;
   final contrl = TextEditingController();
   Future<void> onlock(bool value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -91,7 +91,6 @@ class _SettingsState extends State<Settings> {
     super.initState();
     _loadLockPref();
     _loadLockPref();
-    loadsync();
   }
 
   Future<void> _loadLockPref() async {
@@ -100,19 +99,22 @@ class _SettingsState extends State<Settings> {
     setState(() => isLocked = locked);
   }
 
-  Future<void> loadsync() async {
-    final value = await SyncSeetings.isenabled();
-    setState(() {
-      _syncenabled = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         centerTitle: true,
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                SimpleHiddenDrawerController.of(context).toggle();
+              },
+              icon: Icon(Icons.menu),
+            );
+          },
+        ),
 
         title: Text(
           'Settings',
@@ -213,24 +215,18 @@ class _SettingsState extends State<Settings> {
                       context,
                     ).colorScheme.inversePrimary.withValues(alpha: .12),
                   ),
+
                   ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    enabled: isLocked,
                     title: Text(
-                      "Sync",
+                      "Logout",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.inversePrimary,
                       ),
                     ),
-                    trailing: CupertinoSwitch(
-                      value: _syncenabled,
-                      onChanged: (value) async {
-                        setState(() {
-                          _syncenabled = value;
-                        });
-                        await SyncSeetings.setEnabled(value);
-                      },
-                    ),
+                    onTap: () => logout(),
                   ),
                 ],
               ),
@@ -239,5 +235,10 @@ class _SettingsState extends State<Settings> {
         ),
       ),
     );
+  }
+
+  final auth = Authservice();
+  void logout() async {
+    await auth.signout();
   }
 }

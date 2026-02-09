@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:provider/provider.dart';
-import 'package:quil/components/drawer.dart';
+import 'package:quil/components/hiddendraw.dart';
 import 'package:quil/components/search.dart';
 import 'package:quil/loacaldb/notemodel.dart';
 // ignore: unused_import
@@ -52,6 +53,16 @@ class _NotelistState extends State<Notelist> {
 
       appBar: AppBar(
         centerTitle: true,
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                SimpleHiddenDrawerController.of(context).toggle();
+              },
+              icon: Icon(Icons.menu),
+            );
+          },
+        ),
 
         title: InkWell(
           onLongPress: () async {
@@ -100,10 +111,14 @@ class _NotelistState extends State<Notelist> {
             MaterialPageRoute(builder: (ctx) => Deatilscreen()),
           );
         },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60)),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         tooltip: 'Addnote',
-        child: Icon(Icons.add),
+        mini: false,
+        elevation: 0,
+        child: Icon(Icons.add_rounded),
       ),
-      drawer: Mydraw(),
+      drawer: Hiddendraw(),
     );
   }
 
@@ -119,7 +134,7 @@ class _NotelistState extends State<Notelist> {
           child: Card(
             margin: const EdgeInsets.symmetric(vertical: 3.5, horizontal: 2.5),
             color: Theme.of(context).colorScheme.surface,
-            elevation: 2.0,
+            elevation: 0,
             child: Slidable(
               startActionPane: ActionPane(
                 motion: StretchMotion(),

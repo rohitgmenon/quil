@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quil/components/hiddendraw.dart';
 import 'package:quil/screens/loginpage.dart';
 
-import 'package:quil/screens/notelist.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Authgate extends StatelessWidget {
@@ -20,7 +20,7 @@ class Authgate extends StatelessWidget {
         }
 
         if (session != null) {
-          return Notelist();
+          return Hiddendraw();
         } else {
           return Loginpage();
         }

@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../loacaldb/notemodel.dart';
+import 'notemodel.dart';
 
 mixin Dbhelper {
   static const int _version = 1;
@@ -9,9 +9,15 @@ mixin Dbhelper {
     return openDatabase(
       join(await getDatabasesPath(), _dbname),
       version: _version,
-      onCreate: (db, version) async => await db.execute(
-        'CREATE TABLE NOTES (id TEXT PRIMARY KEY,userId TEXT NOT NULL, summary TEXT,title TEXT NOT NULL,content TEXT NOT NULL,importance INTEGER NOT NULL,created  TEXT NOT NULL,updated TEXT NOT NULL ,deletedat TEXT,isSynced INTEGER DEFAULT 0,isarchived TEXT)',
-      ),
+      onCreate: (db, version) async {
+        await db.execute(
+          'CREATE TABLE NOTES (id TEXT PRIMARY KEY,userId TEXT NOT NULL, summary TEXT,title TEXT NOT NULL,content TEXT NOT NULL,importance INTEGER NOT NULL,created TEXT NOT NULL,updated TEXT NOT NULL ,deletedat TEXT,isSynced INTEGER DEFAULT 0,isarchived TEXT)',
+        );
+        await db.execute(
+          '''CREATE TABLE TASKS(
+        id TEXT PRIMARY KEY,userId TEXT NOT NULL,task TEXT,isdone INTEGER ,isdelete INTEGER DEFAULT 0, updated TEXT)''',
+        );
+      },
     );
   }
 
@@ -135,44 +141,39 @@ mixin Dbhelper {
     );
   }
 
-  static Future<List<Note>> unsynced(String userId) async {
-    final db = await _getdb();
-    final List<Map<String, dynamic>> maps = await db.query(
-      "NOTES",
-      where: ' userId =? AND isSynced=0',
-      whereArgs: [userId],
-    );
-    if (maps.isEmpty) {
-      return [];
-    }
-    return List.generate(maps.length, (index) => Note.fromMap(maps[index]));
-  }
-
-  static Future<int> upsertlocal(Note note) async {
+  static Future<int> addtask(Tasks task) async {
     final db = await _getdb();
     return await db.insert(
-      'NOTES',
-      note.toMap()..['isSynced'] = 1,
-
+      'TASKS',
+      task.tomap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  static Future<int> marked(String id) async {
+  static Future<int> updatask(Tasks Task) async {
     final db = await _getdb();
     return await db.update(
-      'NOTES',
-      {'isSynced': 1, 'updated': DateTime.now().toIso8601String()},
+      'TASKS',
+      Task.tomap(),
+      where: 'id =? AND userId=?',
+      whereArgs: [Task.id, Task.userId],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
+  static Future<int> deltask(String id) async {
+    final db = await _getdb();
+    return await db.update(
+      'TASKS',
+      {'isdelete': 1, 'updated': DateTime.now().toIso8601String()},
       where: 'id=?',
       whereArgs: [id],
     );
   }
 
-  static Future<Note?> getbyid(String id) async {
+  static Future<List<Tasks>> getlist() async {
     final db = await _getdb();
-    final maps = await db.query('NOTES', where: 'id=?', whereArgs: [id]);
-    if (maps.isEmpty) return null;
-    return Note.fromMap(maps.first);
+    final maps = await db.query('TASKS', where: 'isdelete=0');
+    return maps.map((m) => Tasks.fromMap(m)).toList();
   }
 }

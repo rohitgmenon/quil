@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:quil/services/notesprovider.dart';
 import 'package:quil/test/constants.dart';
@@ -24,6 +25,16 @@ class _BinState extends State<Bin> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                SimpleHiddenDrawerController.of(context).toggle();
+              },
+              icon: Icon(Icons.menu),
+            );
+          },
+        ),
         title: Text(
           "Recycle Bin",
           style: GoogleFonts.dmSerifText(

@@ -106,6 +106,7 @@ class _DeatilscreenState extends State<Deatilscreen> {
                   controller: _title,
                   decoration: InputDecoration(
                     labelText: 'Title',
+
                     border: OutlineInputBorder(),
                   ),
                 ),

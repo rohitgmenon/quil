@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quil/services/notesprovider.dart';
+import 'package:quil/services/taskprovider.dart';
 import 'package:quil/supabase/auth/authgate.dart';
 import 'package:quil/test/constants.dart';
 import 'package:quil/themes/themesprovider.dart';
@@ -24,6 +25,9 @@ void main() async {
           create: (_) => Notesprovider(localuser)..loadnotes(),
         ),
         ChangeNotifierProvider.value(value: themeProvider),
+        ChangeNotifierProvider(
+          create: (_) => Taskprovider(localuser)..loadtasks(),
+        ),
       ],
       child: const MyApp(),
     ),
