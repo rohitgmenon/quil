@@ -48,7 +48,7 @@ class _TasksrceenState extends State<Tasksrceen> {
           final task = tasks[index];
           return Slidable(
             startActionPane: ActionPane(
-              motion: StretchMotion(),
+              motion: BehindMotion(),
               extentRatio: 0.30,
               children: [
                 SlidableAction(
@@ -57,6 +57,7 @@ class _TasksrceenState extends State<Tasksrceen> {
                   foregroundColor: Colors.white,
                   icon: Icons.delete_rounded,
                   label: "DELETE",
+                  borderRadius: BorderRadius.circular(24),
                 ),
               ],
             ),

@@ -228,8 +228,8 @@ class _DeatilscreenState extends State<Deatilscreen> {
         // Empty string means delete, null means cancelled
         summary = newsummary.trim().isEmpty ? null : newsummary;
       });
+      if (!mounted) return;
 
-      // Optional: Show feedback when deleted
       if (newsummary.trim().isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

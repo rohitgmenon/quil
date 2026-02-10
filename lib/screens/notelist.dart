@@ -157,7 +157,7 @@ class _NotelistState extends State<Notelist> {
               ),
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: getcolor(note.importance),
+                  backgroundColor: getcolor(context, note.importance),
                   child: geticon(note.importance),
                 ),
                 title: Text(note.title),
@@ -189,16 +189,17 @@ class _NotelistState extends State<Notelist> {
     );
   }
 
-  Color getcolor(int importance) {
+  Color getcolor(BuildContext ctx, importance) {
+    final Color = Theme.of(ctx).colorScheme;
     switch (importance) {
       case 1:
-        return Colors.red;
+        return Color.error;
 
       case 2:
-        return Colors.yellow;
+        return Color.tertiary;
 
       default:
-        return Colors.yellow;
+        return Color.tertiary;
     }
   }
 
@@ -208,10 +209,10 @@ class _NotelistState extends State<Notelist> {
         return Icon(Icons.priority_high_outlined);
 
       case 2:
-        return Icon(Icons.low_priority_outlined);
+        return Icon(Icons.pending);
 
       default:
-        return Icon(Icons.low_priority_outlined);
+        return Icon(Icons.pending);
     }
   }
 

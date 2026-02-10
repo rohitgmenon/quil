@@ -90,7 +90,6 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
     _loadLockPref();
-    _loadLockPref();
   }
 
   Future<void> _loadLockPref() async {
@@ -218,7 +217,7 @@ class _SettingsState extends State<Settings> {
 
                   ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    enabled: isLocked,
+
                     title: Text(
                       "Logout",
                       style: TextStyle(

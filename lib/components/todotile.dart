@@ -14,13 +14,13 @@ class Todotile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 0),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
       child: Container(
+        padding: EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(15),
         ),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
 
         child: Row(
           children: [
