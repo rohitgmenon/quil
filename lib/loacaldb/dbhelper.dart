@@ -17,6 +17,14 @@ mixin Dbhelper {
           '''CREATE TABLE TASKS(
         id TEXT PRIMARY KEY,userId TEXT NOT NULL,task TEXT,isdone INTEGER ,isdelete INTEGER DEFAULT 0, updated TEXT)''',
         );
+        await db.execute('''
+      CREATE TABLE code_table (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        filename TEXT NOT NULL,
+        code TEXT NOT NULL,
+        lang TEXT NOT NULL
+      )
+    ''');
       },
     );
   }
@@ -175,5 +183,41 @@ mixin Dbhelper {
     final db = await _getdb();
     final maps = await db.query('TASKS', where: 'isdelete=0');
     return maps.map((m) => Tasks.fromMap(m)).toList();
+  }
+
+  static Future<int> insert(Code codeModel) async {
+    final db = await _getdb();
+    return await db.insert('code_table', codeModel.toMap());
+  }
+
+  static Future<Code?> getById(int id) async {
+    final db = await _getdb();
+    final maps = await db.query('code_table', where: 'id = ?', whereArgs: [id]);
+
+    if (maps.isNotEmpty) {
+      return Code.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  static Future<List<Code>> getAll() async {
+    final db = await _getdb();
+    final maps = await db.query('code_table');
+    return maps.map((map) => Code.fromMap(map)).toList();
+  }
+
+  static Future<int> update(Code codeModel) async {
+    final db = await _getdb();
+    return await db.update(
+      'code_table',
+      codeModel.toMap(),
+      where: 'id = ?',
+      whereArgs: [codeModel.id],
+    );
+  }
+
+  static Future<int> delete(int id) async {
+    final db = await _getdb();
+    return await db.delete('code_table', where: 'id = ?', whereArgs: [id]);
   }
 }

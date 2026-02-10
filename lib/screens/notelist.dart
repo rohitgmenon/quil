@@ -125,68 +125,112 @@ class _NotelistState extends State<Notelist> {
     );
   }
 
-  ListView mainlist() {
+  Widget mainlist() {
     final notes = context.watch<Notesprovider>().notes;
-    return ListView.builder(
-      itemCount: notes.length,
-
-      itemBuilder: (BuildContext context, index) {
-        final note = notes[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-          child: Card(
-            margin: const EdgeInsets.symmetric(vertical: 3.5, horizontal: 2.5),
-            color: Theme.of(
-              context,
-            ).colorScheme.secondary.withValues(alpha: 0.1),
-            elevation: 0,
-            child: Slidable(
-              startActionPane: ActionPane(
-                motion: StretchMotion(),
-                children: [
-                  SlidableAction(
-                    onPressed: (ctx) {
-                      archive(ctx, note);
-                    },
-                    backgroundColor: archivetheme(context),
-                    foregroundColor: Colors.white,
-                    icon: Icons.archive,
-                    label: "Archive",
+    return notes.isEmpty
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 9),
+                  child: Icon(
+                    Icons.edit_note,
+                    size: 100,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.inversePrimary.withValues(alpha: .2),
                   ),
-                ],
-              ),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: getcolor(context, note.importance),
-                  child: geticon(note.importance),
                 ),
-                title: Text(note.title),
-                subtitle: Text(
-                  note.content,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(height: 24),
+                Text(
+                  'No notes yet',
+                  style: GoogleFonts.dmSerifText(
+                    fontSize: 24,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.inversePrimary.withValues(alpha: .4),
+                  ),
                 ),
-
-                trailing: IconButton(
-                  onPressed: () {
-                    delete(context, note);
-                  },
-                  icon: Icon(Icons.delete),
+                const SizedBox(height: 8),
+                Text(
+                  'Tap the + button to create one',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.inversePrimary.withValues(alpha: 0.2),
+                  ),
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) => Deatilscreen(notes: note),
-                    ),
-                  );
-                },
-              ),
+              ],
             ),
-          ),
-        );
-      },
-    );
+          )
+        : ListView.builder(
+            itemCount: notes.length,
+
+            itemBuilder: (BuildContext context, index) {
+              final note = notes[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 2.0,
+                  horizontal: 8.0,
+                ),
+                child: Card(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 3.5,
+                    horizontal: 2.5,
+                  ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.secondary.withValues(alpha: 0.1),
+                  elevation: 0,
+                  child: Slidable(
+                    startActionPane: ActionPane(
+                      motion: StretchMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (ctx) {
+                            archive(ctx, note);
+                          },
+                          backgroundColor: archivetheme(context),
+                          foregroundColor: Colors.white,
+                          icon: Icons.archive,
+                          label: "Archive",
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: getcolor(context, note.importance),
+                        child: geticon(note.importance),
+                      ),
+                      title: Text(note.title),
+                      subtitle: Text(
+                        note.content,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      trailing: IconButton(
+                        onPressed: () {
+                          delete(context, note);
+                        },
+                        icon: Icon(Icons.delete),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) => Deatilscreen(notes: note),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
   }
 
   Color getcolor(BuildContext ctx, importance) {

@@ -49,6 +49,7 @@ dependencies:
   flutter_code_editor: ^0.3.5
   flutter_highlight: ^0.7.0
   hidden_drawer_menu: ^3.0.1
+  http: ^1.6.0
   
 
 dev_dependencies:

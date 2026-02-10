@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quil/services/codeprovider.dart';
 import 'package:quil/services/notesprovider.dart';
 import 'package:quil/services/taskprovider.dart';
 import 'package:quil/supabase/auth/authgate.dart';
@@ -28,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => Taskprovider(localuser)..loadtasks(),
         ),
+        ChangeNotifierProvider(create: (_) => Codeprovider()..loadCodes()),
       ],
       child: const MyApp(),
     ),

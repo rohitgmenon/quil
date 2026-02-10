@@ -7,45 +7,55 @@ class Todotile extends StatelessWidget {
     required this.isdone,
     this.onchanged,
   });
+
   final String taskname;
   final bool isdone;
   final Function(bool?)? onchanged;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
-      child: Container(
-        padding: EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(15),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.inversePrimary.withValues(alpha: .1),
+          width: 1,
         ),
-
-        child: Row(
-          children: [
-            Checkbox(
+      ),
+      child: Row(
+        children: [
+          Transform.scale(
+            scale: 1.2,
+            child: Checkbox(
               value: isdone,
               onChanged: onchanged,
-              checkColor: Theme.of(context).colorScheme.inversePrimary,
-              shape: CircleBorder(),
-            ),
-            Expanded(
-              child: Text(
-                taskname,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                  fontSize: 16,
-                  decoration: isdone
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                  decorationColor: Theme.of(context).colorScheme.inversePrimary,
-                  decorationThickness: 3,
-                ),
+              checkColor: Theme.of(context).colorScheme.surface,
+              activeColor: Theme.of(context).colorScheme.inversePrimary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              taskname,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.inversePrimary,
+                fontSize: 16,
+                decoration: isdone
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+                decorationColor: Theme.of(context).colorScheme.inversePrimary,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

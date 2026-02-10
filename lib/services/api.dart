@@ -29,3 +29,17 @@ Future<String> summarizer(String text) async {
     return text;
   }
 }
+
+Future<String> debugger(String text) async {
+  try {
+    final res = await Supabase.instance.client.functions.invoke(
+      'debbuger',
+      body: {'text': text},
+    );
+
+    return res.data['correctedText'];
+  } catch (e) {
+    print('error:$e');
+    return text;
+  }
+}

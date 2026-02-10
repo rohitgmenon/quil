@@ -43,25 +43,53 @@ class _BinState extends State<Bin> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemCount: notelist.length,
-          itemBuilder: (context, index) {
-            final note = notelist[index];
-            return ListTile(
-              title: Text(note.title),
-              subtitle: Text(note.content),
-              trailing: IconButton(
-                onPressed: () {
-                  context.read<Notesprovider>().restore(note);
-                },
-                icon: const Icon(Icons.restore),
+      body: notelist.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 9),
+                    child: Icon(
+                      Icons.delete,
+                      size: 100,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.inversePrimary.withValues(alpha: .2),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'No notes yet',
+                    style: GoogleFonts.dmSerifText(
+                      fontSize: 24,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.inversePrimary.withValues(alpha: .4),
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-      ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: notelist.length,
+                itemBuilder: (context, index) {
+                  final note = notelist[index];
+                  return ListTile(
+                    title: Text(note.title),
+                    subtitle: Text(note.content),
+                    trailing: IconButton(
+                      onPressed: () {
+                        context.read<Notesprovider>().restore(note);
+                      },
+                      icon: const Icon(Icons.restore),
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }

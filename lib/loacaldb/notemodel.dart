@@ -137,3 +137,39 @@ class Tasks {
     );
   }
 }
+
+class Code {
+  final int? id;
+  final String filename;
+  final String code;
+  final String lang;
+
+  Code({
+    required this.filename,
+    required this.code,
+    required this.lang,
+    this.id,
+  });
+
+  factory Code.fromMap(Map<String, dynamic> map) {
+    return Code(
+      id: map['id'] as int,
+      filename: map['filename'] as String,
+      code: map['code'] as String,
+      lang: map['lang'] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'id': id, 'filename': filename, 'code': code, 'lang': lang};
+  }
+
+  Code copyWith({int? id, String? filename, String? code, String? lang}) {
+    return Code(
+      id: id ?? this.id,
+      filename: filename ?? this.filename,
+      code: code ?? this.code,
+      lang: lang ?? this.lang,
+    );
+  }
+}
