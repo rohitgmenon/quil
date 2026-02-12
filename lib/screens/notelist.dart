@@ -255,19 +255,6 @@ class _NotelistState extends State<Notelist> {
     }
   }
 
-  Icon geticon(int importance) {
-    switch (importance) {
-      case 1:
-        return Icon(Icons.priority_high_outlined);
-
-      case 2:
-        return Icon(Icons.pending);
-
-      default:
-        return Icon(Icons.pending);
-    }
-  }
-
   void delete(BuildContext ctx, Note note) {
     ctx.read<Notesprovider>().deletenote(note);
   }
