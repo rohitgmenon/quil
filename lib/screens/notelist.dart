@@ -175,56 +175,64 @@ class _NotelistState extends State<Notelist> {
                   vertical: 2.0,
                   horizontal: 8.0,
                 ),
-                child: Card(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 3.5,
-                    horizontal: 2.5,
-                  ),
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.secondary.withValues(alpha: 0.1),
-                  elevation: 0,
-                  child: Slidable(
-                    startActionPane: ActionPane(
-                      motion: StretchMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (ctx) {
-                            archive(ctx, note);
-                          },
-                          backgroundColor: archivetheme(context),
-                          foregroundColor: Colors.white,
-                          icon: Icons.archive,
-                          label: "Archive",
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: getcolor(context, note.importance),
-                        child: geticon(note.importance),
-                      ),
-                      title: Text(note.title),
-                      subtitle: Text(
-                        note.content,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(19),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary.withValues(alpha: 0.1),
 
-                      trailing: IconButton(
-                        onPressed: () {
-                          delete(context, note);
-                        },
-                        icon: Icon(Icons.delete),
+                      border: Border(
+                        left: BorderSide(
+                          color: getcolor(context, note.importance),
+                          width: 7,
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => Deatilscreen(notes: note),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 3.5,
+                      horizontal: 2.5,
+                    ),
+
+                    child: Slidable(
+                      startActionPane: ActionPane(
+                        motion: StretchMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (ctx) {
+                              archive(ctx, note);
+                            },
+                            backgroundColor: archivetheme(context),
+                            foregroundColor: Colors.white,
+                            icon: Icons.archive,
+                            label: "Archive",
                           ),
-                        );
-                      },
+                        ],
+                      ),
+                      child: ListTile(
+                        title: Text(note.title),
+                        subtitle: Text(
+                          note.content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+
+                        trailing: IconButton(
+                          onPressed: () {
+                            delete(context, note);
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (ctx) => Deatilscreen(notes: note),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),

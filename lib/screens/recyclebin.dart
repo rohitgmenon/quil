@@ -78,8 +78,16 @@ class _BinState extends State<Bin> {
                 itemBuilder: (context, index) {
                   final note = notelist[index];
                   return ListTile(
-                    title: Text(note.title),
-                    subtitle: Text(note.content),
+                    title: Text(
+                      note.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      note.content,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     trailing: IconButton(
                       onPressed: () {
                         context.read<Notesprovider>().restore(note);

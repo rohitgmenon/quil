@@ -1,5 +1,3 @@
-// ignore_for_file: dead_code
-
 import 'package:flutter/material.dart';
 import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +24,8 @@ class _IdeState extends State<Ide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text("Programs", style: GoogleFonts.dmSerifText()),
         leading: IconButton(
           onPressed: () {
             SimpleHiddenDrawerController.of(context).toggle();
@@ -98,22 +98,33 @@ class _IdeState extends State<Ide> {
                   vertical: 2.0,
                   horizontal: 8.0,
                 ),
-                child: ListTile(
-                  leading: Icon(Icons.code),
-                  title: Text(note.filename),
-                  subtitle: Text(note.code),
-                  trailing: IconButton(
-                    onPressed: () {
-                      delete(context, note);
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    leading: Icon(Icons.code),
+                    title: Text(
+                      note.filename,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      note.code,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {
+                        delete(context, note);
+                      },
+                      icon: Icon(Icons.delete_forever),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => Editor(snip: note)),
+                      );
                     },
-                    icon: Icon(Icons.delete_forever),
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => Editor(snip: note)),
-                    );
-                  },
                 ),
               );
             },
