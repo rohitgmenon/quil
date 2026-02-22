@@ -1,5 +1,6 @@
 // lib/services/sync_service.dart
 
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -30,7 +31,7 @@ class SyncService {
       await _pullNotes(userId);
     } catch (e) {
       // Best-effort — being offline is not an error
-      print('[Sync] Notes error: $e');
+      debugPrint('[Sync] Notes error: $e');
     }
   }
 
@@ -76,7 +77,7 @@ class SyncService {
         );
       } catch (e) {
         // Leave isSynced = 0 so it retries on next startup
-        print('[Sync] Failed to push note ${note.id}: $e');
+        debugPrint('[Sync] Failed to push note ${note.id}: $e');
       }
     }
   }
@@ -160,7 +161,7 @@ class SyncService {
       await _pushTasks(userId);
       await _pullTasks(userId);
     } catch (e) {
-      print('[Sync] Tasks error: $e');
+      debugPrint('[Sync] Tasks error: $e');
     }
   }
 
