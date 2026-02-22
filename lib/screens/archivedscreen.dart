@@ -51,10 +51,21 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
         final note = notes[index];
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-          child: Card(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(
+                context,
+              ).colorScheme.secondary.withValues(alpha: 0.1),
+
+              border: Border(
+                left: BorderSide(
+                  color: getcolor(context, note.importance),
+                  width: 7,
+                ),
+              ),
+            ),
             margin: const EdgeInsets.symmetric(vertical: 3.5, horizontal: 2.5),
-            color: Theme.of(context).colorScheme.surface,
-            elevation: 2.0,
+
             child: Slidable(
               startActionPane: ActionPane(
                 motion: StretchMotion(),
@@ -71,10 +82,6 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
                 ],
               ),
               child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: getcolor(note.importance),
-                  child: geticon(note.importance),
-                ),
                 title: Text(note.title),
                 subtitle: Text(
                   note.content,
@@ -104,29 +111,17 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
     );
   }
 
-  Color getcolor(int importance) {
+  Color getcolor(BuildContext ctx, importance) {
+    final Color = Theme.of(ctx).colorScheme;
     switch (importance) {
       case 1:
-        return Colors.red;
+        return Color.error;
 
       case 2:
-        return Colors.yellow;
+        return Color.tertiary;
 
       default:
-        return Colors.yellow;
-    }
-  }
-
-  Icon geticon(int importance) {
-    switch (importance) {
-      case 1:
-        return Icon(Icons.priority_high_outlined);
-
-      case 2:
-        return Icon(Icons.low_priority_outlined);
-
-      default:
-        return Icon(Icons.low_priority_outlined);
+        return Color.tertiary;
     }
   }
 

@@ -86,9 +86,10 @@ class _DeatilscreenState extends State<Deatilscreen> {
                 SizedBox(height: 8),
                 TextFormField(
                   controller: _title,
+
                   decoration: InputDecoration(
                     labelText: 'Title',
-                    border: InputBorder.none,
+                    border: OutlineInputBorder(),
                   ),
                 ),
                 SizedBox(height: 16),

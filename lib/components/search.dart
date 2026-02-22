@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:quil/loacaldb/notemodel.dart';
 import 'package:quil/services/notesprovider.dart';
 import 'package:quil/screens/deatilscreen.dart';
 
@@ -47,29 +49,62 @@ class Search extends SearchDelegate {
         final note = results[index];
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-          child: Card(
-            margin: const EdgeInsets.symmetric(vertical: 3.5, horizontal: 2.5),
-            color: Theme.of(context).colorScheme.surface,
-            elevation: 2.0,
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: getcolor(note.importance),
-                child: geticon(note.importance),
-              ),
-              title: Text(note.title),
-              subtitle: Text(
-                note.content,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              onTap: () {
-                Navigator.push(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(19),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(
                   context,
-                  MaterialPageRoute(
-                    builder: (ctx) => Deatilscreen(notes: note),
+                ).colorScheme.secondary.withValues(alpha: 0.1),
+                border: Border(
+                  left: BorderSide(
+                    color: getcolor(context, note.importance),
+                    width: 7,
                   ),
-                );
-              },
+                ),
+              ),
+              margin: const EdgeInsets.symmetric(
+                vertical: 3.5,
+                horizontal: 2.5,
+              ),
+              child: Slidable(
+                startActionPane: ActionPane(
+                  motion: StretchMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (ctx) {
+                        archive(context, note);
+                      },
+                      backgroundColor: archivetheme(context),
+                      foregroundColor: Colors.white,
+                      icon: Icons.archive,
+                      label: "Archive",
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  title: Text(note.title),
+                  subtitle: Text(
+                    note.content,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      delete(context, note);
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => Deatilscreen(notes: note),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         );
@@ -104,29 +139,62 @@ class Search extends SearchDelegate {
         final note = suggestions[index];
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-          child: Card(
-            margin: const EdgeInsets.symmetric(vertical: 3.5, horizontal: 2.5),
-            color: Theme.of(context).colorScheme.surface,
-            elevation: 2.0,
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: getcolor(note.importance),
-                child: geticon(note.importance),
-              ),
-              title: Text(note.title),
-              subtitle: Text(
-                note.content,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              onTap: () {
-                Navigator.push(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(19),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(
                   context,
-                  MaterialPageRoute(
-                    builder: (ctx) => Deatilscreen(notes: note),
+                ).colorScheme.secondary.withValues(alpha: 0.1),
+                border: Border(
+                  left: BorderSide(
+                    color: getcolor(context, note.importance),
+                    width: 7,
                   ),
-                );
-              },
+                ),
+              ),
+              margin: const EdgeInsets.symmetric(
+                vertical: 3.5,
+                horizontal: 2.5,
+              ),
+              child: Slidable(
+                startActionPane: ActionPane(
+                  motion: StretchMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (ctx) {
+                        archive(context, note);
+                      },
+                      backgroundColor: archivetheme(context),
+                      foregroundColor: Colors.white,
+                      icon: Icons.archive,
+                      label: "Archive",
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  title: Text(note.title),
+                  subtitle: Text(
+                    note.content,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      delete(context, note);
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => Deatilscreen(notes: note),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         );
@@ -134,25 +202,29 @@ class Search extends SearchDelegate {
     );
   }
 
-  Color getcolor(int importance) {
+  Color getcolor(BuildContext context, int importance) {
+    final colorScheme = Theme.of(context).colorScheme;
     switch (importance) {
       case 1:
-        return Colors.red;
+        return colorScheme.error;
       case 2:
-        return Colors.yellow;
+        return colorScheme.tertiary;
       default:
-        return Colors.yellow;
+        return colorScheme.tertiary;
     }
   }
 
-  Icon geticon(int importance) {
-    switch (importance) {
-      case 1:
-        return Icon(Icons.priority_high_outlined);
-      case 2:
-        return Icon(Icons.low_priority_outlined);
-      default:
-        return Icon(Icons.low_priority_outlined);
-    }
+  void delete(BuildContext context, Note note) {
+    context.read<Notesprovider>().deletenote(note);
+  }
+
+  void archive(BuildContext context, Note note) {
+    context.read<Notesprovider>().archivenote(note);
+  }
+
+  Color archivetheme(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xFF2E7D32)
+        : const Color(0xFF4CAF50);
   }
 }

@@ -87,6 +87,36 @@ class Note {
       isarchived: isarchived ?? this.isarchived,
     );
   }
+
+  Map<String, dynamic> toSupabase() => {
+    'id': id,
+    'user_id': userId,
+    'title': title,
+    'content': content,
+    'summary': summary,
+    'importance': importance,
+    'created': created.toIso8601String(),
+    'updated': updated.toIso8601String(),
+    'deletedat': deletedat?.toIso8601String(),
+    'isarchived': isarchived?.toIso8601String(),
+  };
+  factory Note.fromSupabase(Map<String, dynamic> json) => Note(
+    id: json['id'],
+    userId: json['user_id'],
+    title: json['title'],
+    content: json['content'],
+    summary: json['summary'],
+    importance: json['importance'],
+    created: DateTime.parse(json['created']),
+    updated: DateTime.parse(json['updated']),
+    deletedat: json['deletedat'] != null
+        ? DateTime.parse(json['deletedat'])
+        : null,
+    isSynced: true,
+    isarchived: json['isarchived'] != null
+        ? DateTime.parse(json['isarchived'])
+        : null,
+  );
 }
 
 class Tasks {

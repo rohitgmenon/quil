@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quil/loacaldb/notemodel.dart';
 import 'package:quil/loacaldb/dbhelper.dart';
+import 'package:quil/loacaldb/notemodel.dart';
+
 import 'package:quil/test/constants.dart';
 
 class Notesprovider extends ChangeNotifier {
