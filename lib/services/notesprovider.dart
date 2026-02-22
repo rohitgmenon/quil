@@ -6,9 +6,9 @@ import 'package:quil/loacaldb/dbhelper.dart';
 import 'package:quil/services/sync.dart';
 import 'package:quil/test/constants.dart';
 
-/// LOCAL-FIRST: every method writes to SQLite first and notifies the UI
-/// immediately. SyncService is only invoked once on startup — never here.
 class Notesprovider extends ChangeNotifier {
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
   final String userId;
   Notesprovider(this.userId);
 
@@ -24,7 +24,11 @@ class Notesprovider extends ChangeNotifier {
   // ─── LOCAL OPERATIONS (unchanged from original) ────────────────────────────
 
   Future<void> loadnotes() async {
-    _notes = await Dbhelper.fetch(userId);
+    _isLoading = true;
+
+    final fresh = await Dbhelper.fetch(userId);
+    _notes = fresh;
+    _isLoading = false;
     notifyListeners();
   }
 

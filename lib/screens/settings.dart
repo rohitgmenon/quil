@@ -227,25 +227,6 @@ class _SettingsState extends State<Settings> {
                     ),
                     onTap: () => logout(),
                   ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.inversePrimary.withValues(alpha: .12),
-                  ),
-                  ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-
-                    title: Text(
-                      "sync",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.inversePrimary,
-                      ),
-                    ),
-                    onTap: () => (),
-                  ),
                 ],
               ),
             ),

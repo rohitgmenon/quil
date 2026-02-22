@@ -127,6 +127,10 @@ class _NotelistState extends State<Notelist> {
 
   Widget mainlist() {
     final notes = context.watch<Notesprovider>().notes;
+    final isLoading = context.watch<Notesprovider>().isLoading;
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return notes.isEmpty
         ? Center(
             child: Column(

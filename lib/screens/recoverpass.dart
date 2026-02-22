@@ -11,31 +11,53 @@ class Recoverpass extends StatefulWidget {
 
 class _RecoverpassState extends State<Recoverpass> {
   final _email = TextEditingController();
-
   final authservice = Authservice();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    super.dispose();
+  }
+
   void recover() async {
+    if (_email.text.isEmpty) return;
+
+    setState(() => _isLoading = true);
+
     final email = _email.text;
-    await authservice.recover(email);
-    showDialog(
-      // ignore: use_build_context_synchronously
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Email Sent"),
-        content: const Text("Check your email for Token(check the spam to :))"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => Resetpassword(email2: email)),
-              );
-            },
-            child: const Text("ok"),
-          ),
-        ],
-      ),
-    );
+    try {
+      await authservice.recover(email);
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Email Sent"),
+          content: const Text("Check your email for Token (check spam too :))"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Resetpassword(email2: email),
+                  ),
+                );
+              },
+              child: const Text("ok"),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 
   @override
@@ -51,11 +73,11 @@ class _RecoverpassState extends State<Recoverpass> {
               context,
             ).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
           ),
-
           Padding(
             padding: const EdgeInsets.all(20),
             child: TextField(
               controller: _email,
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "Email",
                 hintText: "Enter your email",
@@ -73,7 +95,7 @@ class _RecoverpassState extends State<Recoverpass> {
           SizedBox(
             height: 50,
             child: ElevatedButton(
-              onPressed: recover,
+              onPressed: _isLoading ? null : recover,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.inversePrimary,
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -81,10 +103,22 @@ class _RecoverpassState extends State<Recoverpass> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'GET TOKEN',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
+              child: _isLoading
+                  ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text(
+                      'GET TOKEN',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
             ),
           ),
         ],

@@ -130,17 +130,17 @@ class _ResetpasswordState extends State<Resetpassword> {
     try {
       await authservice.verify(email, token);
       await authservice.update(confirmpass);
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
+      // Just pop the loading dialog — Authgate's stream will
+      // detect the new session and navigate to Hiddendraw automatically
       Navigator.pop(context);
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Password updated successfully")),
       );
     } catch (e) {
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(
-        // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
