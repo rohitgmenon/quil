@@ -3,10 +3,9 @@ import 'package:http/http.dart' as http;
 
 Future<String> compiler(String input, String lang, [String stdin = '']) async {
   try {
-    // Piston API endpoint
-    var url = Uri.https('emkc.org', '/api/v2/piston/execute');
+    // Use the correct public Piston endpoint
+    var url = Uri.parse('https://emkc.org/api/v2/piston/execute');
 
-    // Language versions map
     var versions = {
       'python': '3.10.0',
       'javascript': '18.15.0',
@@ -24,16 +23,17 @@ Future<String> compiler(String input, String lang, [String stdin = '']) async {
       'stdin': stdin,
     });
 
-    // Send POST request
     var response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: body,
     );
 
+    print('Status Code: ${response.statusCode}'); // Debug line
+    print('Response Body: ${response.body}'); // Debug line
+
     if (response.statusCode == 200) {
-      var jsonResponse =
-          convert.jsonDecode(response.body) as Map<String, dynamic>;
+      var jsonResponse = convert.jsonDecode(response.body) as Map;
       var output = jsonResponse['run']['output'] ?? 'No output';
       var stderr = jsonResponse['run']['stderr'] ?? '';
 
@@ -42,7 +42,7 @@ Future<String> compiler(String input, String lang, [String stdin = '']) async {
       }
       return output;
     } else {
-      return 'Request failed with status: ${response.statusCode}';
+      return 'Request failed with status: ${response.statusCode}\nBody: ${response.body}';
     }
   } catch (e) {
     return 'Error: $e';

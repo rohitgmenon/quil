@@ -38,7 +38,7 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
         ),
       ),
 
-      body: Expanded(child: mainlist()),
+      body: mainlist(),
     );
   }
 

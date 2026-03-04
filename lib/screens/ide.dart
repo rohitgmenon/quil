@@ -33,7 +33,7 @@ class _IdeState extends State<Ide> {
           icon: const Icon(Icons.menu),
         ),
       ),
-      body: Expanded(child: mainlist()),
+      body: mainlist(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

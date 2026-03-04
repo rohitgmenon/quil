@@ -103,7 +103,7 @@ class _NotelistState extends State<Notelist> {
         ],
       ),
 
-      body: Expanded(child: mainlist()),
+      body: mainlist(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

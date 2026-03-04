@@ -19,32 +19,15 @@ class Codebar extends StatelessWidget {
       decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
 
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
-            child: IconButton(onPressed: onsavepress, icon: Icon(Icons.save)),
+          IconButton(onPressed: onsavepress, icon: Icon(Icons.save)),
+          IconButton(
+            onPressed: ondeletepress,
+            icon: Icon(Icons.format_line_spacing_rounded),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
-            child: IconButton(
-              onPressed: ondeletepress,
-              icon: Icon(Icons.format_line_spacing_rounded),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(36),
-            child: IconButton(
-              onPressed: onfixpress,
-              icon: Icon(Icons.auto_fix_high),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: IconButton(
-              onPressed: oncampress,
-              icon: Icon(Icons.play_arrow),
-            ),
-          ),
+          IconButton(onPressed: onfixpress, icon: Icon(Icons.auto_fix_high)),
+          IconButton(onPressed: oncampress, icon: Icon(Icons.play_arrow)),
         ],
       ),
     );

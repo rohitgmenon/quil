@@ -5,6 +5,7 @@ class Bottombar extends StatelessWidget {
   final VoidCallback? ondeletepress;
   final VoidCallback? onfixpress;
   final VoidCallback? oncampress;
+
   const Bottombar({
     super.key,
     this.onsavepress,
@@ -17,31 +18,16 @@ class Bottombar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
-
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
-            child: IconButton(onPressed: onsavepress, icon: Icon(Icons.save)),
+          IconButton(onPressed: onsavepress, icon: const Icon(Icons.save)),
+          IconButton(onPressed: ondeletepress, icon: const Icon(Icons.flag)),
+          IconButton(
+            onPressed: onfixpress,
+            icon: const Icon(Icons.auto_fix_high),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
-            child: IconButton(onPressed: ondeletepress, icon: Icon(Icons.flag)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(36),
-            child: IconButton(
-              onPressed: onfixpress,
-              icon: Icon(Icons.auto_fix_high),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: IconButton(
-              onPressed: oncampress,
-              icon: Icon(Icons.summarize),
-            ),
-          ),
+          IconButton(onPressed: oncampress, icon: const Icon(Icons.summarize)),
         ],
       ),
     );
